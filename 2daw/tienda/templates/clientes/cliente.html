@@ -1,0 +1,9 @@
+<p>{{cliente.nombre }}</p>
+<p>{{cliente.apellidos}}</p>
+{% if cliente.id == 1 %}
+<h2> No es el primer cliente </h2>
+{% elif cliente.id == 2 %}
+<h2> Es el segundo cliente </h2>
+{% else %}
+<h2> Es el primer cliente </h2>
+{% endif %}

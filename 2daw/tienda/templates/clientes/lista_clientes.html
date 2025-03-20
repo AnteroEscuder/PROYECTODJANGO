@@ -1,17 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda</title>
-</head>
-<body>
-    
-    {% for cliente in cliente_mostrar %}
-        <p>{{cliente.nombre}}</p>
-        <p>{{cliente.apellidos}}</p>
-    {% endfor %}    
+{% extends "estructura/principal.html" %}
+    {% block contenido %}
+        {% for cliente in cliente_mostrar %}
+        {% include 'cliente/cliente.html' %}
+        {% empty %}
+            <h1> lo sentimos , no hay clientes</h1>
+        {% endfor %}    
 
-
-</body>
-</html>
+    {% endblock %}

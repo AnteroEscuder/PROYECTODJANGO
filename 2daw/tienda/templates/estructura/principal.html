@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+
+    {% block titulo %}
+        <title>Mi tienda online</title>
+    {% endblock %}
+</head>
+<body>
+    {% include 'estructura/menu.html'%}
+
+    <h1> ESTA ES MI TIENDA ONLINE </h1>
+    {% block contenido %}
+
+    {% include 'estructura/pie.html'%}
+
+    {% endblock %}
+    {% bootstrap_javascript %}
+</body>
+</html>
