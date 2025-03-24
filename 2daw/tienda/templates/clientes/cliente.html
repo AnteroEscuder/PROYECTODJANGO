@@ -1,9 +1,12 @@
-<p>{{cliente.nombre }}</p>
-<p>{{cliente.apellidos}}</p>
-{% if cliente.id == 1 %}
-<h2> No es el primer cliente </h2>
-{% elif cliente.id == 2 %}
-<h2> Es el segundo cliente </h2>
-{% else %}
-<h2> Es el primer cliente </h2>
-{% endif %}
+{% block contenido %}
+  <div class="container mt-5">
+    <h2>Detalles del Cliente <span class="text-primary">{{cliente.nombre}}</span></h2>
+    <div class="card mb-2">
+      <div class="card-body">
+        <h5 class="card-title"><strong>Nombre:</strong> {{ cliente.nombre }}</h5>
+        <h6 class="card-text"><strong>Apellidos:</strong> {{ cliente.apellidos }}</h5>
+        <p class="card-text"><strong>Usuario:</strong> {{ cliente.usuarios }}</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}
