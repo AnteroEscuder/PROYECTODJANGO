@@ -1,7 +1,7 @@
 {% extends "estructura/principal.html" %}
     {% block contenido %}
         {% for cliente in cliente_mostrar %}
-        {% include 'cliente/cliente.html' %}
+        {% include 'clientes/cliente.html' %}
         {% empty %}
             <h1> lo sentimos , no hay clientes</h1>
         {% endfor %}    
