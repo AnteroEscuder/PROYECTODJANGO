@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,18 +11,25 @@
     {% endblock %}
 </head>
 <body>
-    {% include 'estructura/menu.html'%}
 
-    <h1> ESTA ES MI TIENDA ONLINE </h1>
-    {% block contenido %}
+    {% include 'estructura/menu.html' %}
 
-    {% include 'estructura/pie.html'%}
+    <div class="container mt-5">
+        <h1 class="text-center">¡Bienvenido a mi Tienda Online!</h1>
+        {% block contenido %}
+        {% endblock %}
+    </div>
 
+    {% include 'estructura/pie.html' %}
+
+<<<<<<< HEAD
     {% endblock %}
 
     <footer>
         {% include 'estructura/pie.html' %}
     </footer>
+=======
+>>>>>>> 5ab91deb0e22634b1ae43aa0223188ec7c6579b3
     {% bootstrap_javascript %}
 </body>
 </html>
