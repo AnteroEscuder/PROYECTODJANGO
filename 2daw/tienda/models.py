@@ -4,17 +4,17 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 class Usuario (AbstractUser):
-    ADMINISTRADOR=1
-    CLIENTE=2
-    VENDEDOR=3
-    ROLES =(
+    ADMINISTRADOR = 1
+    CLIENTE = 2
+    VENDEDOR = 3
+    ROLES = (
         (ADMINISTRADOR, 'administrador'),
         (CLIENTE, 'cliente'),
         (VENDEDOR, 'vendedor'),
     )
 
     rol = models.PositiveSmallIntegerField(
-        choices=ROLES,default=2
+        choices= ROLES,default=CLIENTE
     )
 
 class Cliente(models.Model):
