@@ -4,12 +4,11 @@
 <div class="container mt-5">
     <h2>Lista de Clientes</h2>
     {% if cliente_mostrar %}
-    <tbody>
-        {% for cliente in cliente_mostrar %}
-        {% include 'clientes/cliente.html' %}
-        {% endfor %}
-        {% else %}
-        <p>No hay clientes registrados.</p>
-        {% endif %}
+    {% for cliente in cliente_mostrar %}
+    {% include 'clientes/cliente.html' %}
+    {% endfor %}
+    {% else %}
+     <p>No hay clientes registrados.</p>
+    {% endif %}
 </div>
 {% endblock %}

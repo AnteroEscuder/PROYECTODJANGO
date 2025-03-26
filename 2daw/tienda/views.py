@@ -14,6 +14,20 @@ def lista_clientes(request):
     listado_clientes = Cliente.objects.all()
     return render(request,'clientes/lista_clientes.html',{'cliente_mostrar': listado_clientes})
 
+# def registrar_usuario(request):
+#    formulario = RegistroForm()
+#    return render(request,'registration/signup.html', {'formulario': formulario})
+
 def registrar_usuario(request):
-   formulario = RegistroForm()
-   return render(request,'registration/signup.html', {'formulario': formulario})
+    if request.method == 'POST':
+        formulario = RegistroForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            login(request, user)
+            return redirect('inicio')
+    else:
+        formulario = RegistroForm()
+
+    return render(request, 'registration/signup.html', {'formulario': formulario})

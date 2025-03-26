@@ -1,0 +1,20 @@
+{% extends 'estructura/principal.html' %}
+
+{% load django_bootstrap5 %}
+
+{% block titulo %}
+    <title>Registro de Usuario</title>
+{% endblock %}
+
+{% block contenido %}
+    <div class="container mt-5">
+        <h2>Registro de Usuario</h2>
+
+        <form method="post" action="{% url 'registrar_usuario' %}">
+            {% csrf_token %}
+            {{ formulario.as_p }}
+            {% bootstrap_form formulario %}
+            <button type="submit" class="btn btn-primary mb-2">Registrar</button>
+        </form>
+    </div>
+{% endblock %}
