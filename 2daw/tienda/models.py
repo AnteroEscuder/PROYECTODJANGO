@@ -21,6 +21,10 @@ class Cliente(models.Model):
     usuario = models.OneToOneField(Usuario,
                                    on_delete= models.CASCADE)
     
+
+    def __str__(self):
+        return self.usuario.username
+    
 class Vendedor(models.Model):
     usuario = models.OneToOneField(Usuario,
                                    on_delete= models.CASCADE)

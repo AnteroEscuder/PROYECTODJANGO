@@ -1,11 +1,10 @@
 {% block contenido %}
   <div class="container mt-5">
-    <h2>Detalles del Cliente <span class="text-primary">{{cliente.nombre}}</span></h2>
+    <h2>Detalles del Cliente <span class="text-primary">{{cliente.usuario.first_name}}</span></h2>
     <div class="card mb-2">
       <div class="card-body">
-        <h5 class="card-title"><strong>Nombre:</strong> {{ cliente.nombre }}</h5>
-        <h6 class="card-text"><strong>Apellidos:</strong> {{ cliente.apellidos }}</h5>
-        <p class="card-text"><strong>Usuario:</strong> {{ cliente.usuarios }}</p>
+        <h6 class="card-text"><strong>Apellidos:</strong> {{ cliente.usuario.last_name}}</h5>
+        <p class="card-text"><strong>Usuario:</strong> {{ cliente.usuario.username }}</p>
       </div>
     </div>
   </div>
