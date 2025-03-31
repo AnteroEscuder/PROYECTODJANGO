@@ -1,11 +1,24 @@
 {% extends "estructura/principal.html" %}
 
 {% block contenido %}
-<form action="{% url 'login' %}" method="post">
-    {% load django_bootstrap5 %}
-    {% csrf_token %}
-    {% bootstrap_form form %}
+    <div class="container mt-5">
 
-    {% bootstrap_button "Enviar" button_type="submit" button_class="btn-primary" %}
-</form>
+        <h2>Inciar Sesión</h2>
+
+        {% if messages %}
+            <div class="alert alert-danger">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form action="{% url 'login' %}" method="post">
+            {% load django_bootstrap5 %}
+            {% csrf_token %}
+            {% bootstrap_form form %}
+        
+            {% bootstrap_button "Enviar" button_type="submit" button_class="btn-primary" %}
+        </form>
+    </div>
+
 {% endblock %}

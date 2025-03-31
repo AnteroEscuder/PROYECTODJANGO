@@ -131,3 +131,5 @@ AUTH_USER_MODEL = 'tienda.Usuario'
 
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
+
+LOGIN_URL = 'login'

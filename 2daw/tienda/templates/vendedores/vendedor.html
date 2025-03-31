@@ -1,0 +1,11 @@
+{% block contenido %}
+  <div class="container mt-5">
+    <h2>Detalles del Vendedor <span class="text-primary">{{vendedor.usuario.first_name}}</span></h2>
+    <div class="card mb-2">
+      <div class="card-body">
+        <h6 class="card-text"><strong>Apellidos:</strong> {{ vendedor.usuario.last_name}}</h5>
+        <p class="card-text"><strong>Usuario:</strong> {{ vendedor.usuario.username }}</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

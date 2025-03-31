@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from.models import Usuario
 from django import forms
 
@@ -14,3 +14,5 @@ class RegistroForm(UserCreationForm):
         model = Usuario
         fields = ('username','email','password1','password2','rol')
 
+class LoginForm(AuthenticationForm):
+    pass
