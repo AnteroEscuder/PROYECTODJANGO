@@ -5,6 +5,7 @@ from .forms import *
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import Group
 from django.contrib import messages
+from django.contrib.auth.decorators import permission_required
 
 # Create your views here.
 def index(request):
@@ -13,6 +14,7 @@ def index(request):
 
     return render(request,'index.html',{})
 
+@permission_required('tienda.add_cliente')
 def lista_clientes(request):
     listado_clientes = Cliente.objects.all()
     return render(request,'clientes/lista_clientes.html',{'cliente_mostrar': listado_clientes})
@@ -62,3 +64,5 @@ def login_view(request):
         form = LoginForm()
     
     return  render(request, 'registration/login.html', {'form': form})
+
+

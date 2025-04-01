@@ -1,6 +1,21 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'inicio' %}">Tienda Online</a>
+        {% if request.user.is_authenticated %}
+            <span class="navbar-text text-white ms-3">
+                {{ request.user.username }} {% if user.rol == 1  %}
+                <p>Rol: Admin</p>
+                
+                {% elif user.rol == 2 %}
+                <p>Rol: cliente</p>
+
+                {% else %}
+                <p>Rol: Vendedor</p>
+
+                {% endif %}
+            </span>
+        {% endif %}
+
         <p class="navbar-brand">
             Fecha inicio:
             </br>
@@ -17,12 +32,16 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{% url 'inicio' %}">Inicio</a>
                 </li>
+                {% if perms.tienda.view_cliente %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'lista_clientes' %}">Listado de Clientes</a>
                 </li>
+                {% endif %}
+                {%if request.user.rol == 1%}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'lista_vendedores' %}">Listado de Vendedores</a>
                 </li>
+                {%endif%}
                 <li class="nav-item">
                     <a class="nav-link" href="#">Productos</a>
                 </li>
@@ -46,10 +65,12 @@
                     {% endif %}
     
                     {% if request.user.is_authenticated %}
-                    <a class="btn btn-outline-warning" href="{% url 'logout' %}">
-                        Desconectarse
-                    </a>
+                    <form action="{% url 'logout' %}" class="d-flex m-3" role="search" method="POST">
+                        {% csrf_token %}
+                        <button class="btn btn-light btn-outline-dark" type="submit">Desconectarse</button>
+                    </form>
                     {% endif %}
+                    
                 </li>        
             </ul>
         </div>

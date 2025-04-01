@@ -39,3 +39,9 @@ class Vendedor(models.Model):
 
     def __str__(self):
         return self.usuario.username
+    
+
+class Medicamento(models.Model):
+    nombre = models.CharField(max_length=100)
+    precio = models.IntegerField(default=0)
+    fecha_caducidad = models.DateField
