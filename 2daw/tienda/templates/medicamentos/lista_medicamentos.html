@@ -1,0 +1,14 @@
+{% extends 'estructura/principal.html' %}
+
+{% block contenido %}
+<div class="container mt-5">
+    <h2>Lista de Medicamentos</h2>
+    {% if medicamentos_mostrar %}
+    {% for medicamento in medicamentos_mostrar %}
+    {% include 'medicamentos/medicamento.html' %}
+    {% endfor %}
+    {% else %}
+     <p>No hay medicamentos registrados.</p>
+    {% endif %}
+</div>
+{% endblock %}

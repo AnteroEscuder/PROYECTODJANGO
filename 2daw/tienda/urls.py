@@ -7,4 +7,5 @@ urlpatterns = [
     path('registrar/',views.registrar_usuario, name='registrar_usuario'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('vendedores/',views.lista_vendedores, name='lista_vendedores'),
+    path('medicamentos/',views.lista_medicamentos, name='lista_medicamentos'),
 ]

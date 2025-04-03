@@ -1,0 +1,11 @@
+{% block contenido %}
+  <div class="container mt-5">
+    <h2>Detalles del Medicamento <span class="text-primary">{{medicamento.nombre}}</span></h2>
+    <div class="card mb-2">
+      <div class="card-body">
+        <h6 class="card-text"><strong>Precio:</strong> {{ medicamento.precio }}</h5>
+        <p class="card-text"><strong>Fecha Caducidad:</strong> {{ medicamento.fecha_caducidad }}</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -2,15 +2,17 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'inicio' %}">Tienda Online</a>
         {% if request.user.is_authenticated %}
-            <span class="navbar-text text-white ms-3">
-                {{ request.user.username }} {% if user.rol == 1  %}
-                <p>Rol: Admin</p>
+            <span class="navbar-text text-white ms-3 me-5">
+                <span class="badge text-bg-info">Usuario: {{ request.user.username }}</span>
+
+                {% if request.user.rol == 1  %}
+                <span class="badge bg-danger">Rol: Admin</span>
                 
-                {% elif user.rol == 2 %}
-                <p>Rol: cliente</p>
+                {% elif request.user.rol == 2 %}
+                <span class="badge bg-primary">Rol: cliente</span>
 
                 {% else %}
-                <p>Rol: Vendedor</p>
+                <span class="badge bg-success">Rol: Vendedor</span>
 
                 {% endif %}
             </span>
@@ -42,16 +44,19 @@
                     <a class="nav-link" href="{% url 'lista_vendedores' %}">Listado de Vendedores</a>
                 </li>
                 {%endif%}
+
+                {%if request.user.rol == 2%}
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Productos</a>
+                    <a class="nav-link" href="{% url 'lista_medicamentos' %}">Medicamentos</a>
                 </li>
+                {%endif%}
                 <li class="nav-item">
                     <a class="nav-link" href="#">Ofertas</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Contacto</a>
                 </li>
-                <li>
+                <li class="nav-item ms-2">
                     {% if not request.user.is_authenticated %}
                     <a class="btn btn-outline-warning" href="{% url 'login' %}">
                         Login
@@ -65,7 +70,7 @@
                     {% endif %}
     
                     {% if request.user.is_authenticated %}
-                    <form action="{% url 'logout' %}" class="d-flex m-3" role="search" method="POST">
+                    <form action="{% url 'logout' %}" class="d-flex ms-auto" role="search" method="POST">
                         {% csrf_token %}
                         <button class="btn btn-light btn-outline-dark" type="submit">Desconectarse</button>
                     </form>

@@ -1,11 +1,11 @@
 from datetime import datetime
 from django.shortcuts import render, redirect
-from .models import Cliente, Vendedor
+from .models import Cliente, Vendedor, Medicamento
 from .forms import *
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import Group
 from django.contrib import messages
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, user_passes_test
 
 # Create your views here.
 def index(request):
@@ -21,7 +21,15 @@ def lista_clientes(request):
 
 def lista_vendedores(request):
     listado_vendedores = Vendedor.objects.all()
-    return render(request, 'vendedores/lista_vendedores.html', {'vendedores_mostrar' : listado_vendedores}) 
+    return render(request, 'vendedores/lista_vendedores.html', {'vendedores_mostrar' : listado_vendedores})
+
+def is_cliente(user):
+    return user.rol == Usuario.CLIENTE
+
+@user_passes_test(is_cliente)
+def lista_medicamentos(request):
+    listado_medicamentos = Medicamento.objects.all()
+    return render(request, 'medicamentos/lista_medicamentos.html', {'medicamentos_mostrar' : listado_medicamentos})
 
 def registrar_usuario(request):
     if request.method == 'POST':
