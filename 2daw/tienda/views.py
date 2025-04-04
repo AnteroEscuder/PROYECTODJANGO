@@ -19,6 +19,7 @@ def lista_clientes(request):
     listado_clientes = Cliente.objects.all()
     return render(request,'clientes/lista_clientes.html',{'cliente_mostrar': listado_clientes})
 
+@permission_required('tienda.view_vendedor')
 def lista_vendedores(request):
     listado_vendedores = Vendedor.objects.all()
     return render(request, 'vendedores/lista_vendedores.html', {'vendedores_mostrar' : listado_vendedores})
@@ -26,7 +27,10 @@ def lista_vendedores(request):
 def is_cliente(user):
     return user.rol == Usuario.CLIENTE
 
-@user_passes_test(is_cliente)
+def is_vendedor(user):
+    return user.rol == Usuario.VENDEDOR
+
+@permission_required('tienda.view_medicamento')
 def lista_medicamentos(request):
     listado_medicamentos = Medicamento.objects.all()
     return render(request, 'medicamentos/lista_medicamentos.html', {'medicamentos_mostrar' : listado_medicamentos})
@@ -73,4 +77,35 @@ def login_view(request):
     
     return  render(request, 'registration/login.html', {'form': form})
 
+@permission_required('tienda.add_medicamento')
+def create_medicamento(request):
+    if request.method == 'POST':
+        formulario = MedicamentoModelForm(request.POST)
 
+        if formulario.is_valid():
+            print("Es valido")
+            formulario.save()
+            return redirect("lista_medicamentos")
+
+    else:
+        formulario = MedicamentoModelForm()
+    return render(request, 'medicamentos/medicamentos_form.html',{'formulario': formulario})
+
+@permission_required('tienda.view_tienda')
+def lista_tiendas(request):
+    listado_tiendas = Tienda.objects.all()
+    return render(request, 'tiendas/lista_tiendas.html', {'tiendas_mostrar' : listado_tiendas})
+
+@permission_required('tienda.add_tienda')
+def create_tienda(request):
+    if request.method == 'POST':
+        formulario = TiendaModelForm(request.POST)
+
+        if formulario.is_valid():
+            print("Es valido")
+            formulario.save()
+            return redirect("lista_tiendas")
+
+    else:
+        formulario = TiendaModelForm()
+    return render(request, 'tiendas/tiendas_form.html',{'formulario': formulario})

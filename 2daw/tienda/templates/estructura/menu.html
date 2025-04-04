@@ -39,20 +39,34 @@
                     <a class="nav-link" href="{% url 'lista_clientes' %}">Listado de Clientes</a>
                 </li>
                 {% endif %}
-                {%if request.user.rol == 1%}
+                {%if perms.tienda.view_vendedor %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'lista_vendedores' %}">Listado de Vendedores</a>
                 </li>
                 {%endif%}
 
-                {%if request.user.rol == 2%}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'lista_medicamentos' %}">Medicamentos</a>
                 </li>
-                {%endif%}
+
+                {%if perms.tienda.add_medicamento %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Ofertas</a>
+                    <a class="nav-link" href="{% url 'create_medicamento' %}">Crear Medicamentos</a>
                 </li>
+                {%endif%}
+
+                {%if perms.tienda.view_tienda %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'lista_tiendas' %}">Ver tiendas</a>
+                </li>
+                {%endif%}
+
+                {%if perms.tienda.add_tienda %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'create_tienda' %}">Crear tienda</a>
+                </li>
+                {%endif%}
+
                 <li class="nav-item">
                     <a class="nav-link" href="#">Contacto</a>
                 </li>

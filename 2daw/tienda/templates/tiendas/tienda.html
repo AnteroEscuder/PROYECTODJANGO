@@ -1,0 +1,11 @@
+{% block contenido %}
+  <div class="container mt-5">
+    <h2>Detalles de la tienda <span class="text-primary">{{tienda.nombre}}</span></h2>
+    <div class="card mb-2">
+      <div class="card-body">
+        <h6 class="card-text"><strong>Dirección:</strong> {{ tienda.direccion }}</h5>
+        <p class="card-text"><strong>Número de teléfono:</strong> {{ tienda.telefono }}</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

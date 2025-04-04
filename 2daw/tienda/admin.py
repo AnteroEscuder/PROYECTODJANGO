@@ -4,5 +4,6 @@ admin.site.register(Cliente)
 admin.site.register(Vendedor)
 admin.site.register(Usuario)
 admin.site.register(Medicamento)
+admin.site.register(Tienda)
 
 # Register your models here.

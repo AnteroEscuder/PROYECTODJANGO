@@ -3,52 +3,182 @@
     "model": "admin.logentry",
     "pk": 1,
     "fields": {
-        "action_time": "2025-03-26T08:32:51.111",
+        "action_time": "2025-04-04T18:48:34.172",
         "user": 1,
-        "content_type": 6,
+        "content_type": 7,
         "object_id": "1",
-        "object_repr": "antero",
-        "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Rol\"]}}]"
+        "object_repr": "adsadsd",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
     }
 },
 {
     "model": "admin.logentry",
     "pk": 2,
     "fields": {
-        "action_time": "2025-03-27T10:40:25.109",
-        "user": 1,
-        "content_type": 3,
-        "object_id": "1",
-        "object_repr": "Clientes",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 3,
-    "fields": {
-        "action_time": "2025-03-27T10:40:34.811",
-        "user": 1,
-        "content_type": 3,
-        "object_id": "2",
-        "object_repr": "Vendedores",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 4,
-    "fields": {
-        "action_time": "2025-04-01T10:21:56.130",
+        "action_time": "2025-04-04T19:01:01.425",
         "user": 1,
         "content_type": 3,
         "object_id": "2",
         "object_repr": "Vendedores",
         "action_flag": 2,
         "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 3,
+    "fields": {
+        "action_time": "2025-04-04T19:01:20.213",
+        "user": 1,
+        "content_type": 3,
+        "object_id": "1",
+        "object_repr": "Clientes",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 4,
+    "fields": {
+        "action_time": "2025-04-04T19:02:44.300",
+        "user": 1,
+        "content_type": 8,
+        "object_id": "2",
+        "object_repr": "Cliente1",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Groups\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 5,
+    "fields": {
+        "action_time": "2025-04-04T19:02:46.229",
+        "user": 1,
+        "content_type": 10,
+        "object_id": "1",
+        "object_repr": "Cliente1",
+        "action_flag": 2,
+        "change_message": "[]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 6,
+    "fields": {
+        "action_time": "2025-04-04T19:03:02.061",
+        "user": 1,
+        "content_type": 8,
+        "object_id": "2",
+        "object_repr": "Cliente1",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Rol\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 7,
+    "fields": {
+        "action_time": "2025-04-04T19:03:03.820",
+        "user": 1,
+        "content_type": 10,
+        "object_id": "1",
+        "object_repr": "Cliente1",
+        "action_flag": 2,
+        "change_message": "[]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 8,
+    "fields": {
+        "action_time": "2025-04-04T19:03:17.669",
+        "user": 1,
+        "content_type": 10,
+        "object_id": "1",
+        "object_repr": "Cliente1",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 9,
+    "fields": {
+        "action_time": "2025-04-04T19:08:37.221",
+        "user": 1,
+        "content_type": 8,
+        "object_id": "1",
+        "object_repr": "root",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Rol\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 10,
+    "fields": {
+        "action_time": "2025-04-04T19:09:57.651",
+        "user": 1,
+        "content_type": 8,
+        "object_id": "2",
+        "object_repr": "Cliente1",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 11,
+    "fields": {
+        "action_time": "2025-04-04T19:10:07.919",
+        "user": 1,
+        "content_type": 8,
+        "object_id": "4",
+        "object_repr": "Cliente1",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Username\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 12,
+    "fields": {
+        "action_time": "2025-04-04T19:10:09.120",
+        "user": 1,
+        "content_type": 9,
+        "object_id": "1",
+        "object_repr": "Cliente1",
+        "action_flag": 2,
+        "change_message": "[]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 13,
+    "fields": {
+        "action_time": "2025-04-04T19:10:26.246",
+        "user": 1,
+        "content_type": 8,
+        "object_id": "4",
+        "object_repr": "cliente1",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Username\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 14,
+    "fields": {
+        "action_time": "2025-04-04T19:10:28.072",
+        "user": 1,
+        "content_type": 9,
+        "object_id": "1",
+        "object_repr": "cliente1",
+        "action_flag": 2,
+        "change_message": "[]"
     }
 },
 {
@@ -235,144 +365,180 @@
     "model": "auth.permission",
     "pk": 21,
     "fields": {
-        "name": "Can add user",
+        "name": "Can add medicamento",
         "content_type": 6,
-        "codename": "add_usuario"
+        "codename": "add_medicamento"
     }
 },
 {
     "model": "auth.permission",
     "pk": 22,
     "fields": {
-        "name": "Can change user",
+        "name": "Can change medicamento",
         "content_type": 6,
-        "codename": "change_usuario"
+        "codename": "change_medicamento"
     }
 },
 {
     "model": "auth.permission",
     "pk": 23,
     "fields": {
-        "name": "Can delete user",
+        "name": "Can delete medicamento",
         "content_type": 6,
-        "codename": "delete_usuario"
+        "codename": "delete_medicamento"
     }
 },
 {
     "model": "auth.permission",
     "pk": 24,
     "fields": {
-        "name": "Can view user",
+        "name": "Can view medicamento",
         "content_type": 6,
-        "codename": "view_usuario"
+        "codename": "view_medicamento"
     }
 },
 {
     "model": "auth.permission",
     "pk": 25,
     "fields": {
-        "name": "Can add cliente",
+        "name": "Can add tienda",
         "content_type": 7,
-        "codename": "add_cliente"
+        "codename": "add_tienda"
     }
 },
 {
     "model": "auth.permission",
     "pk": 26,
     "fields": {
-        "name": "Can change cliente",
+        "name": "Can change tienda",
         "content_type": 7,
-        "codename": "change_cliente"
+        "codename": "change_tienda"
     }
 },
 {
     "model": "auth.permission",
     "pk": 27,
     "fields": {
-        "name": "Can delete cliente",
+        "name": "Can delete tienda",
         "content_type": 7,
-        "codename": "delete_cliente"
+        "codename": "delete_tienda"
     }
 },
 {
     "model": "auth.permission",
     "pk": 28,
     "fields": {
-        "name": "Can view cliente",
+        "name": "Can view tienda",
         "content_type": 7,
-        "codename": "view_cliente"
+        "codename": "view_tienda"
     }
 },
 {
     "model": "auth.permission",
     "pk": 29,
     "fields": {
-        "name": "Can add vendedor",
+        "name": "Can add user",
         "content_type": 8,
-        "codename": "add_vendedor"
+        "codename": "add_usuario"
     }
 },
 {
     "model": "auth.permission",
     "pk": 30,
     "fields": {
-        "name": "Can change vendedor",
+        "name": "Can change user",
         "content_type": 8,
-        "codename": "change_vendedor"
+        "codename": "change_usuario"
     }
 },
 {
     "model": "auth.permission",
     "pk": 31,
     "fields": {
-        "name": "Can delete vendedor",
+        "name": "Can delete user",
         "content_type": 8,
-        "codename": "delete_vendedor"
+        "codename": "delete_usuario"
     }
 },
 {
     "model": "auth.permission",
     "pk": 32,
     "fields": {
-        "name": "Can view vendedor",
+        "name": "Can view user",
         "content_type": 8,
-        "codename": "view_vendedor"
+        "codename": "view_usuario"
     }
 },
 {
     "model": "auth.permission",
     "pk": 33,
     "fields": {
-        "name": "Can add medicamento",
+        "name": "Can add cliente",
         "content_type": 9,
-        "codename": "add_medicamento"
+        "codename": "add_cliente"
     }
 },
 {
     "model": "auth.permission",
     "pk": 34,
     "fields": {
-        "name": "Can change medicamento",
+        "name": "Can change cliente",
         "content_type": 9,
-        "codename": "change_medicamento"
+        "codename": "change_cliente"
     }
 },
 {
     "model": "auth.permission",
     "pk": 35,
     "fields": {
-        "name": "Can delete medicamento",
+        "name": "Can delete cliente",
         "content_type": 9,
-        "codename": "delete_medicamento"
+        "codename": "delete_cliente"
     }
 },
 {
     "model": "auth.permission",
     "pk": 36,
     "fields": {
-        "name": "Can view medicamento",
+        "name": "Can view cliente",
         "content_type": 9,
-        "codename": "view_medicamento"
+        "codename": "view_cliente"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 37,
+    "fields": {
+        "name": "Can add vendedor",
+        "content_type": 10,
+        "codename": "add_vendedor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 38,
+    "fields": {
+        "name": "Can change vendedor",
+        "content_type": 10,
+        "codename": "change_vendedor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 39,
+    "fields": {
+        "name": "Can delete vendedor",
+        "content_type": 10,
+        "codename": "delete_vendedor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 40,
+    "fields": {
+        "name": "Can view vendedor",
+        "content_type": 10,
+        "codename": "view_vendedor"
     }
 },
 {
@@ -380,7 +546,10 @@
     "pk": 1,
     "fields": {
         "name": "Clientes",
-        "permissions": []
+        "permissions": [
+            24,
+            28
+        ]
     }
 },
 {
@@ -389,9 +558,10 @@
     "fields": {
         "name": "Vendedores",
         "permissions": [
-            25,
-            26,
-            27,
+            21,
+            22,
+            23,
+            24,
             28
         ]
     }
@@ -441,12 +611,28 @@
     "pk": 6,
     "fields": {
         "app_label": "tienda",
-        "model": "usuario"
+        "model": "medicamento"
     }
 },
 {
     "model": "contenttypes.contenttype",
     "pk": 7,
+    "fields": {
+        "app_label": "tienda",
+        "model": "tienda"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 8,
+    "fields": {
+        "app_label": "tienda",
+        "model": "usuario"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 9,
     "fields": {
         "app_label": "tienda",
         "model": "cliente"
@@ -454,42 +640,34 @@
 },
 {
     "model": "contenttypes.contenttype",
-    "pk": 8,
+    "pk": 10,
     "fields": {
         "app_label": "tienda",
         "model": "vendedor"
     }
 },
 {
-    "model": "contenttypes.contenttype",
-    "pk": 9,
-    "fields": {
-        "app_label": "tienda",
-        "model": "medicamento"
-    }
-},
-{
     "model": "sessions.session",
-    "pk": "476z3qa8qg5w01a7jmor1ysufibeb8hv",
+    "pk": "kugkve4s0yfj4epqad2ikv2ct5w3j5kp",
     "fields": {
-        "session_data": "eyJmZWNoYV9pbmljaW8iOiIwMS8wNC8yMDI1IDEwOjQ5In0:1tzXJ7:SP-DRI1LLkETgsNQR8CC35lkvUVlQKIf5jki4Rr1vf4",
-        "expire_date": "2025-04-15T10:49:17.439"
+        "session_data": ".eJxVjMsOwiAQAH_F7Nkgj6UUjt79BrJdwKKmJH2cjP9umvTS68xkvlAyjxTrVLk2CCDxJvGmpbYX5YO0cIVI2zrGbclzrAkCqDMbiN952kV60fRsgtu0znUQeyIOu4hHS_lzP9rTYKRlhAAGPRfvpbVFZdKE2TqnTO-Tp4E67DJzn4rpCVGX4rxJSIa0J9cpZoTfH4coQO4:1u0kUJ:Ia78ZOfuWfL2zvUOmvG2bkuK61E8uRzHuc3ynl-WZBA",
+        "expire_date": "2025-04-18T19:05:51.269"
     }
 },
 {
     "model": "tienda.usuario",
     "pk": 1,
     "fields": {
-        "password": "pbkdf2_sha256$870000$3EFtQp0Sth0DYk0GoIGlyi$nk5zBc2nsaicY9+/1QAsZEAg7A9XChroH69cKKhc+8Q=",
-        "last_login": "2025-04-01T10:48:47.238",
+        "password": "pbkdf2_sha256$870000$KaXKV4WH0eLJdGKEBesWSK$pO13XD6mie+31wBvAFujJbnPHBVfP4CGBCsvKZRJTSo=",
+        "last_login": "2025-04-04T19:05:51",
         "is_superuser": true,
-        "username": "antero",
+        "username": "root",
         "first_name": "",
         "last_name": "",
         "email": "",
         "is_staff": true,
         "is_active": true,
-        "date_joined": "2025-03-26T08:32:15",
+        "date_joined": "2025-04-04T18:48:20",
         "rol": 1,
         "groups": [],
         "user_permissions": []
@@ -497,39 +675,22 @@
 },
 {
     "model": "tienda.usuario",
-    "pk": 2,
-    "fields": {
-        "password": "pbkdf2_sha256$870000$WJwnOrGlWjXsnRHnet7tSZ$8xb8SpUsUUABI2Bbclj20OSfPMenPYc88PIkg+Up36E=",
-        "last_login": null,
-        "is_superuser": false,
-        "username": "antero98",
-        "first_name": "",
-        "last_name": "",
-        "email": "anteroescuder15@gmail.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2025-03-27T10:28:05.028",
-        "rol": 2,
-        "groups": [],
-        "user_permissions": []
-    }
-},
-{
-    "model": "tienda.usuario",
     "pk": 3,
     "fields": {
-        "password": "pbkdf2_sha256$870000$po5VeaKcLztPspAwK6XcM0$jniPgF0GMKE/ji3kK7uBVZLUL3h0/XEVV2locOzijjU=",
-        "last_login": null,
+        "password": "pbkdf2_sha256$870000$wvv3Os9lVJtlWElLjApZbY$dm9uVaQMAu3uQQJegNqRZeczNkyDdTzIceEtdHXf3cI=",
+        "last_login": "2025-04-04T19:03:45.278",
         "is_superuser": false,
-        "username": "ante98",
+        "username": "vendedor1",
         "first_name": "",
         "last_name": "",
-        "email": "anteroescuder15@gmail.com",
+        "email": "vendedor1@gmail.com",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2025-03-27T10:29:57.062",
-        "rol": 2,
-        "groups": [],
+        "date_joined": "2025-04-04T19:03:44.864",
+        "rol": 3,
+        "groups": [
+            2
+        ],
         "user_permissions": []
     }
 },
@@ -537,224 +698,16 @@
     "model": "tienda.usuario",
     "pk": 4,
     "fields": {
-        "password": "pbkdf2_sha256$870000$mzvBIHIDkinMQpnulvkJgP$NDb7r7qRFd/at7dZtR5+ya/mWE4g7xaeFjGz2F8n9NY=",
-        "last_login": null,
+        "password": "pbkdf2_sha256$870000$R9hwAzDr5NZAOthhy9w5vP$bZ005ybl0H58WTSZefvNuA2gTjPKNvUnNWZVM3v+boE=",
+        "last_login": "2025-04-04T19:05:33",
         "is_superuser": false,
-        "username": "isco98",
+        "username": "cliente1",
         "first_name": "",
         "last_name": "",
-        "email": "anteroescuder15@gmail.com",
+        "email": "c@gmail.com",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2025-03-27T10:34:56.622",
-        "rol": 2,
-        "groups": [],
-        "user_permissions": []
-    }
-},
-{
-    "model": "tienda.usuario",
-    "pk": 5,
-    "fields": {
-        "password": "pbkdf2_sha256$870000$MOIRfHFygy5MixpgPKPR0U$8Q932iBZls5/+q4nv/FTQMY3Pf3Y6LPV7+o2YT9DUeE=",
-        "last_login": null,
-        "is_superuser": false,
-        "username": "jorge",
-        "first_name": "",
-        "last_name": "",
-        "email": "anteroescuder15@gmail.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2025-03-27T10:51:28.548",
-        "rol": 2,
-        "groups": [
-            1
-        ],
-        "user_permissions": []
-    }
-},
-{
-    "model": "tienda.usuario",
-    "pk": 6,
-    "fields": {
-        "password": "pbkdf2_sha256$870000$t1tWlW9cUJocaL6wyD5vrS$xxZer8IsGIrGPzhwgmPp01IaDNFxtXUx4EJcHRrRcUk=",
-        "last_login": null,
-        "is_superuser": false,
-        "username": "nazareth",
-        "first_name": "",
-        "last_name": "",
-        "email": "anteroescuder15@gmail.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2025-03-27T11:01:16.627",
-        "rol": 2,
-        "groups": [
-            1
-        ],
-        "user_permissions": []
-    }
-},
-{
-    "model": "tienda.usuario",
-    "pk": 7,
-    "fields": {
-        "password": "pbkdf2_sha256$870000$JvZDpBEvu0pd81Qp0wpwbL$S6EUQ5Eq7N8uduzu+tFCFA5QhB/v1EG2t1/c5/Gi/rE=",
-        "last_login": "2025-04-01T09:22:26.762",
-        "is_superuser": false,
-        "username": "antero29121998",
-        "first_name": "",
-        "last_name": "",
-        "email": "anteroescuder15@gmail.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2025-04-01T09:22:26.267",
-        "rol": 2,
-        "groups": [
-            1
-        ],
-        "user_permissions": []
-    }
-},
-{
-    "model": "tienda.usuario",
-    "pk": 8,
-    "fields": {
-        "password": "pbkdf2_sha256$870000$mTzXSvUtUctyTnq7Y4Fbxh$jnc/JxFl4uXxPuJ0oc4ns/Q1ITVscx8JA5UvJajGOVg=",
-        "last_login": "2025-04-01T09:23:47.570",
-        "is_superuser": false,
-        "username": "antero9829",
-        "first_name": "",
-        "last_name": "",
-        "email": "anteroescuder15@gmail.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2025-04-01T09:23:47.090",
-        "rol": 3,
-        "groups": [
-            2
-        ],
-        "user_permissions": []
-    }
-},
-{
-    "model": "tienda.usuario",
-    "pk": 9,
-    "fields": {
-        "password": "pbkdf2_sha256$870000$7mIL4OneFKTGjGTNpyglsb$NdDWJAJ3L3cVh2rMUzAiHz9xB7Uva3G2HOwiSkXWIAg=",
-        "last_login": "2025-04-01T09:57:19.545",
-        "is_superuser": false,
-        "username": "antero15",
-        "first_name": "",
-        "last_name": "",
-        "email": "anteroescuder15@gmail.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2025-04-01T09:57:19.055",
-        "rol": 2,
-        "groups": [
-            1
-        ],
-        "user_permissions": []
-    }
-},
-{
-    "model": "tienda.usuario",
-    "pk": 10,
-    "fields": {
-        "password": "pbkdf2_sha256$870000$Re6jgM00rlSr2rPsALUQa6$fSkeO4lNcYuYC3C7p5VL1psOOD+L/CYA5j2iMiXBYJo=",
-        "last_login": "2025-04-01T09:58:12.346",
-        "is_superuser": false,
-        "username": "jorge25",
-        "first_name": "",
-        "last_name": "",
-        "email": "anteroescuder15@gmail.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2025-04-01T09:58:11.862",
-        "rol": 3,
-        "groups": [
-            2
-        ],
-        "user_permissions": []
-    }
-},
-{
-    "model": "tienda.usuario",
-    "pk": 11,
-    "fields": {
-        "password": "pbkdf2_sha256$870000$Q7I0r2mb8F7iZP3iAe0pz7$wECg/aflqwlNxC4d+oGF5BDVbhFOibkiapFTyUAbr9c=",
-        "last_login": "2025-04-01T10:08:14.018",
-        "is_superuser": false,
-        "username": "israel25",
-        "first_name": "",
-        "last_name": "",
-        "email": "anteroescuder15@gmail.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2025-04-01T10:08:13.467",
-        "rol": 2,
-        "groups": [
-            1
-        ],
-        "user_permissions": []
-    }
-},
-{
-    "model": "tienda.usuario",
-    "pk": 12,
-    "fields": {
-        "password": "pbkdf2_sha256$870000$4lSdsaAvHJuD3Z2hjePFml$zcfcyv7YPqLgBBOdhRW33gTUlLC7ffVYCIS3YDSPxac=",
-        "last_login": "2025-04-01T10:10:48.246",
-        "is_superuser": false,
-        "username": "oscar25",
-        "first_name": "",
-        "last_name": "",
-        "email": "anteroescuder15@gmail.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2025-04-01T10:10:40.476",
-        "rol": 3,
-        "groups": [
-            2
-        ],
-        "user_permissions": []
-    }
-},
-{
-    "model": "tienda.usuario",
-    "pk": 13,
-    "fields": {
-        "password": "pbkdf2_sha256$870000$29NvArkKGKR0pCt1Bk17LM$4lj9bNyQymj6C57b5+4qBkAcuoeFXDAtRp28Knxa3mM=",
-        "last_login": "2025-04-01T10:46:45.231",
-        "is_superuser": false,
-        "username": "carlosvendedor",
-        "first_name": "",
-        "last_name": "",
-        "email": "anteroescuder15@gmail.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2025-04-01T10:30:14.324",
-        "rol": 3,
-        "groups": [
-            2
-        ],
-        "user_permissions": []
-    }
-},
-{
-    "model": "tienda.usuario",
-    "pk": 14,
-    "fields": {
-        "password": "pbkdf2_sha256$870000$W78B42o03q09g9niBs4Agc$71b1zn6Y1/iode3A02iXLtCR3q/E7yhVsODsfVXuQ3I=",
-        "last_login": "2025-04-01T10:32:05.379",
-        "is_superuser": false,
-        "username": "pedroclient",
-        "first_name": "",
-        "last_name": "",
-        "email": "anteroescuder15@gmail.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2025-04-01T10:32:04.892",
+        "date_joined": "2025-04-04T19:05:33",
         "rol": 2,
         "groups": [
             1
@@ -766,63 +719,51 @@
     "model": "tienda.cliente",
     "pk": 1,
     "fields": {
-        "usuario": 6
-    }
-},
-{
-    "model": "tienda.cliente",
-    "pk": 2,
-    "fields": {
-        "usuario": 7
-    }
-},
-{
-    "model": "tienda.cliente",
-    "pk": 3,
-    "fields": {
-        "usuario": 9
-    }
-},
-{
-    "model": "tienda.cliente",
-    "pk": 4,
-    "fields": {
-        "usuario": 11
-    }
-},
-{
-    "model": "tienda.cliente",
-    "pk": 5,
-    "fields": {
-        "usuario": 14
+        "usuario": 4
     }
 },
 {
     "model": "tienda.vendedor",
+    "pk": 2,
+    "fields": {
+        "usuario": 3
+    }
+},
+{
+    "model": "tienda.medicamento",
     "pk": 1,
     "fields": {
-        "usuario": 8
+        "nombre": "Aspirina",
+        "descripcion": "Medicamento bueno",
+        "precio": 6,
+        "fecha_caducidad": "2026-05-15"
     }
 },
 {
-    "model": "tienda.vendedor",
+    "model": "tienda.tienda",
+    "pk": 1,
+    "fields": {
+        "nombre": "adsadsd",
+        "direccion": "asdasd",
+        "telefono": "asdadas"
+    }
+},
+{
+    "model": "tienda.tienda",
     "pk": 2,
     "fields": {
-        "usuario": 10
+        "nombre": "asdaa",
+        "direccion": "asdasdadasdasdas",
+        "telefono": "asd"
     }
 },
 {
-    "model": "tienda.vendedor",
+    "model": "tienda.tienda",
     "pk": 3,
     "fields": {
-        "usuario": 12
-    }
-},
-{
-    "model": "tienda.vendedor",
-    "pk": 4,
-    "fields": {
-        "usuario": 13
+        "nombre": "asdaa",
+        "direccion": "asdasdadasdasdas",
+        "telefono": "123456789"
     }
 }
 ]

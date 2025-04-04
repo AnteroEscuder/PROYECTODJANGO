@@ -1,0 +1,22 @@
+{% extends 'estructura/principal.html' %}
+
+
+
+{% block titulo %}
+    <title>Formulario creación tienda</title>
+{% endblock %}
+
+{% block contenido %}
+    <div class="container mt-5 mb-5">
+        <h2>Crear Tienda</h2>
+
+        <form method="post" action="{% url 'create_tienda' %}">
+            
+            {% load django_bootstrap5 %}
+            {% csrf_token %}
+            {% bootstrap_form formulario %}
+
+            <button type="submit" class="btn btn-primary mb-2">Crear</button>
+        </form>
+    </div>
+{% endblock %}
