@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +8,25 @@
     {% bootstrap_css %}
 
     {% block titulo %}
-        <title>Mi tienda online</title>
+    <title>Mi tienda online</title>
     {% endblock %}
 </head>
+
 <body>
 
     {% include 'estructura/menu.html' %}
+
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        <!-- TODO cerrar -->
+        <p>{{ message }}</p>
+        <button type="button" class="btn-close" data-bs-dismiss aria-label="Close"></button>
+    </div>
+
+    {% endfor %}
+    {% endif %}
 
     <div class="container mt-5">
         <h1 class="text-center">¡Bienvenido a mi Tienda Online!</h1>
@@ -24,4 +38,5 @@
 
     {% bootstrap_javascript %}
 </body>
+
 </html>

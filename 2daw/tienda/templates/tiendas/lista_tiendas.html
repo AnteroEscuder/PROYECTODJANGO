@@ -6,6 +6,7 @@
     {% if tiendas_mostrar %}
     {% for tienda in tiendas_mostrar %}
     {% include 'tiendas/tienda.html' %}
+    <a class="btn btn-primary" href="{% url 'get_tienda' tienda.id %}">Más Información</a>
     {% endfor %}
     {% else %}
      <p>No hay tiendas registrados.</p>

@@ -10,5 +10,10 @@ urlpatterns = [
     path('medicamentos/',views.lista_medicamentos, name='lista_medicamentos'),
     path('crear-medicamento/',views.create_medicamento, name='create_medicamento'),
     path('tiendas/',views.lista_tiendas, name='lista_tiendas'),
+    path('tiendas/<int:idTien>/',views.get_tienda, name='get_tienda'),
+    path('tiendas/<int:idTien>/edit',views.edit_tienda, name='edit_tienda'),
     path('crear-tienda/',views.create_tienda, name='create_tienda'),
+    path('medicamentos/<int:idMed>/',views.get_medicamento, name='get_medicamento'),
+    path('medicamentos/<int:idMed>/edit',views.edit_medicamento, name='edit_medicamento'),
+    
 ]

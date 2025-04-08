@@ -109,3 +109,40 @@ def create_tienda(request):
     else:
         formulario = TiendaModelForm()
     return render(request, 'tiendas/tiendas_form.html',{'formulario': formulario})
+
+def get_tienda(request, idTien):
+    tienda = Tienda.objects.get(id=idTien)
+    return render(request, 'tiendas/tienda_view.html', {'tienda': tienda})
+
+def edit_tienda(request, idTien):
+    tienda = Tienda.objects.get(id=idTien)
+
+    if request.method == 'POST':
+        formulario = TiendaModelForm(request.POST, instance=tienda)
+        if formulario.is_valid():
+            formulario.save()
+            messages.success(request, 'Se ha modificado la tienda correctamente')
+            return redirect('get_tienda', idTien=tienda.id)
+    else:
+        formulario = TiendaModelForm(instance=tienda)
+
+    return render(request, 'tiendas/tienda_edit.html',{'edit_tienda': formulario, "tienda_edited" : tienda})
+
+
+def get_medicamento(request, idMed):
+    medicamento = Medicamento.objects.get(id=idMed)
+    return render(request, 'medicamentos/medicamento_view.html', {'medicamento': medicamento})
+
+def edit_medicamento(request, idMed):
+    medicamento = Medicamento.objects.get(id=idMed)
+
+    if request.method == 'POST':
+        formulario = MedicamentoModelForm(request.POST, instance=medicamento)
+        if formulario.is_valid():
+            formulario.save()
+            messages.success(request, 'Se ha modificado el medicamento correctamente')
+            return redirect('get_medicamento', idMed=medicamento.id)
+    else:
+        formulario = MedicamentoModelForm(instance=medicamento)
+    
+    return render(request, 'medicamentos/medicamento_edit.html',{'edit_medicamento': formulario, "medicamento_edited" : medicamento})

@@ -1,0 +1,25 @@
+{% extends 'estructura/principal.html' %}
+
+{% block titulo %}
+    <title>Formulario edición medicamento</title>
+{% endblock %}
+
+{% block contenido %}
+    <div class="container mt-5 mb-5">
+        <h2>Editar Medicamento</h2>
+
+        <form method="post" action="{% url 'edit_medicamento' medicamento_edited.id %}">
+            
+            {% load django_bootstrap5 %}
+            {% csrf_token %}
+            {% bootstrap_form edit_medicamento %}
+
+            <div class="mb-3">
+                <label for="id_fecha_caducidad" class="form-label">Fecha de Caducidad:</label>
+                <input type="date" name="fecha_caducidad" id="id_fecha_caducidad" class="form-control" value="{{ medicamento_edited.fecha_caducidad|date:'Y-m-d' }}">
+            </div>
+
+            <button type="submit" class="btn btn-primary mb-2">Editar</button>
+        </form>
+    </div>
+{% endblock %}

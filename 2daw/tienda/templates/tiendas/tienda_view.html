@@ -1,0 +1,19 @@
+{% extends 'estructura/principal.html' %}
+
+{% block contenido %}
+
+    {% load bootstrap_icons %}
+
+    {% include './tienda.html' %}
+
+    <div class="row btn-group">
+        <div class="mb-2">
+            <button type="button" class="btn btn-outline-primary">
+                <a href="{% url 'edit_tienda' tienda.id %}">
+                    <span>{% bs_icon 'pencil' %}</span>
+                </a>
+            </button>
+        </div>
+    </div>
+
+{% endblock %}

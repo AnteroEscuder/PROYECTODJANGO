@@ -182,6 +182,19 @@
     }
 },
 {
+    "model": "admin.logentry",
+    "pk": 15,
+    "fields": {
+        "action_time": "2025-04-08T22:19:46.272",
+        "user": 1,
+        "content_type": 6,
+        "object_id": "2",
+        "object_repr": "Test",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
     "model": "auth.permission",
     "pk": 1,
     "fields": {
@@ -655,11 +668,19 @@
     }
 },
 {
+    "model": "sessions.session",
+    "pk": "od5hszdi8sld3ryqzw1lid8djd0lhkrx",
+    "fields": {
+        "session_data": ".eJxVjEsOwiAUAK9i3tog31JYuvcM5PUBghpI-lkZ726adNPtzGS-kBMVDLVVqh088PHG9U1yaS5SemHhCgG3tYRtSXOoETyIM5uQ3qntIr6wPTuj3ta5TmxP2GEX9ugxfe5HexoUXAp4UNpRdo4bk0VCiToZa4UaXXQ44aCHRDTGrEbUWuZsnYoaFUqHdhBEGn5_h_1A7w:1u2FO3:3oZuQDci81PyV1OifCkrg4LDYI6ugFeNbq5Q372dlNM",
+        "expire_date": "2025-04-22T22:17:35.910"
+    }
+},
+{
     "model": "tienda.usuario",
     "pk": 1,
     "fields": {
         "password": "pbkdf2_sha256$870000$KaXKV4WH0eLJdGKEBesWSK$pO13XD6mie+31wBvAFujJbnPHBVfP4CGBCsvKZRJTSo=",
-        "last_login": "2025-04-04T19:05:51",
+        "last_login": "2025-04-08T22:17:35.874",
         "is_superuser": true,
         "username": "root",
         "first_name": "",
@@ -733,19 +754,29 @@
     "model": "tienda.medicamento",
     "pk": 1,
     "fields": {
-        "nombre": "Aspirina",
+        "nombre": "Aspirina2",
         "descripcion": "Medicamento bueno",
         "precio": 6,
         "fecha_caducidad": "2026-05-15"
     }
 },
 {
+    "model": "tienda.medicamento",
+    "pk": 2,
+    "fields": {
+        "nombre": "Test23",
+        "descripcion": "testststst",
+        "precio": 12,
+        "fecha_caducidad": "2025-08-22"
+    }
+},
+{
     "model": "tienda.tienda",
     "pk": 1,
     "fields": {
-        "nombre": "adsadsd",
-        "direccion": "asdasd",
-        "telefono": "asdadas"
+        "nombre": "Tienda Antero",
+        "direccion": "asdasdasdsasdasdasds",
+        "telefono": "601221212"
     }
 },
 {
