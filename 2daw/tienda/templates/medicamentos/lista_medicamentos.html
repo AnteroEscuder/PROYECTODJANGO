@@ -4,12 +4,19 @@
 <div class="container mt-5">
     <h2>Lista de Medicamentos</h2>
     {% if medicamentos_mostrar %}
-    {% for medicamento in medicamentos_mostrar %}
-    {% include 'medicamentos/medicamento.html' %}
-        <a class="btn btn-primary" href="{% url 'get_medicamento' medicamento.id %}">Más Información</a>
-    {% endfor %}
+    <div class="row">
+        {% for medicamento in medicamentos_mostrar %}
+        <div class="col-md-6 mb-4">
+            {% include 'medicamentos/medicamento.html' %}
+            <div class="text-end me-1">
+                <a class="btn btn-primary me-2" href="{% url 'get_medicamento' medicamento.id %}">Más Información</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
     {% else %}
-     <p>No hay medicamentos registrados.</p>
+    <p>No hay medicamentos registrados.</p>
     {% endif %}
 </div>
 {% endblock %}
