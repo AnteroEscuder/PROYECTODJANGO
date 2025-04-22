@@ -2,15 +2,24 @@
 
 {% block contenido %}
 
-    {% load bootstrap_icons %}
+{% load bootstrap_icons %}
 
-    {% include './tienda.html' %}
-    <div class="me-1">
-        <div class="mb-4 mt-3 text-end me-2">
-                <a class="btn btn-lg btn-outline-primary" href="{% url 'edit_tienda' tienda.id %}">
-                    <span>{% bs_icon 'pencil' %}</span>
-                </a>
-        </div>
-    </div>
+{% include './tienda.html' %}
+
+<div class="me-1">
+  <div class="mb-4 mt-3 text-end me-2">
+    <a class="btn btn-lg btn-outline-primary me-2" href="{% url 'edit_tienda' tienda.id %}">
+      {% bs_icon 'pencil' %} Editar
+    </a>
+
+    <form method="post" action="{% url 'delete_tienda' tienda.id %}" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-lg btn-outline-danger"
+              onclick="return confirm('¿Estás seguro de que deseas eliminar esta tienda?');">
+        {% bs_icon 'trash' %} Eliminar
+      </button>
+    </form>
+  </div>
+</div>
 
 {% endblock %}

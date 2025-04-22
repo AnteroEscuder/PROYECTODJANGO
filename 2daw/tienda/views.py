@@ -1,11 +1,13 @@
 from datetime import datetime
 from django.shortcuts import render, redirect
-from .models import Cliente, Vendedor, Medicamento
+from .models import Cliente, Vendedor, Medicamento, CuentaBancaria
 from .forms import *
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required, user_passes_test
+from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 def index(request):
@@ -79,17 +81,20 @@ def login_view(request):
 
 @permission_required('tienda.add_medicamento')
 def create_medicamento(request):
+    vendedor = Vendedor.objects.get(usuario=request.user)
+
     if request.method == 'POST':
-        formulario = MedicamentoModelForm(request.POST)
-
-        if formulario.is_valid():
-            print("Es valido")
-            formulario.save()
-            return redirect("lista_medicamentos")
-
+        form = MedicamentoModelForm(request.POST)
+        if form.is_valid():
+            medicamento = form.save(commit=False)
+            medicamento.vendedor = vendedor
+            medicamento.save()
+            messages.success(request, 'Medicamento creado correctamente.')
+            return redirect('lista_medicamentos')
     else:
-        formulario = MedicamentoModelForm()
-    return render(request, 'medicamentos/medicamentos_form.html',{'formulario': formulario})
+        form = MedicamentoModelForm()
+
+    return render(request, 'medicamentos/medicamento_form.html', {'formulario': form})
 
 @permission_required('tienda.view_tienda')
 def lista_tiendas(request):
@@ -98,51 +103,190 @@ def lista_tiendas(request):
 
 @permission_required('tienda.add_tienda')
 def create_tienda(request):
+    vendedor = Vendedor.objects.get(usuario=request.user)
+
     if request.method == 'POST':
         formulario = TiendaModelForm(request.POST)
-
         if formulario.is_valid():
-            print("Es valido")
-            formulario.save()
-            return redirect("lista_tiendas")
-
+            tienda = formulario.save(commit=False)
+            tienda.vendedor = vendedor
+            tienda.save()
+            messages.success(request, 'Tienda creada correctamente.')
+            return redirect('lista_tiendas')
     else:
         formulario = TiendaModelForm()
-    return render(request, 'tiendas/tiendas_form.html',{'formulario': formulario})
+
+    return render(request, 'tiendas/tiendas_form.html', {'formulario': formulario})
 
 def get_tienda(request, idTien):
     tienda = Tienda.objects.get(id=idTien)
     return render(request, 'tiendas/tienda_view.html', {'tienda': tienda})
 
+def get_medicamento(request, idMed):
+    medicamento = Medicamento.objects.get(id=idMed)
+    return render(request, 'medicamentos/medicamento_view.html', {'medicamento': medicamento})
+
+@permission_required('tienda.add_cuentabancaria')
+def ver_o_crear_cuenta_bancaria(request):
+    cliente = Cliente.objects.get(usuario=request.user)
+    try:
+        cuenta = CuentaBancaria.objects.get(cliente=cliente)
+        return render(request, 'cuenta_bancaria/ver.html', {'cuenta': cuenta})
+    except CuentaBancaria.DoesNotExist:
+        if request.method == 'POST':
+            form = CuentaBancariaForm(request.POST)
+            if form.is_valid():
+                cuenta = form.save(commit=False)
+                cuenta.cliente = cliente
+                cuenta.save()
+                messages.success(request, 'Datos cuenta bancaria guardados correctamente.')
+                return redirect('ver_cuenta_bancaria')
+        else:
+            form = CuentaBancariaForm()
+        return render(request, 'cuenta_bancaria/crear.html', {'form': form})
+
+@permission_required('tienda.change_cuentabancaria')
+def editar_cuenta_bancaria(request):
+    cliente = Cliente.objects.get(usuario=request.user)
+    cuenta = CuentaBancaria.objects.get(cliente=cliente)
+    if request.method == 'POST':
+        form = CuentaBancariaForm(request.POST, instance=cuenta)
+        if form.is_valid():
+            form.save()
+            return redirect('ver_cuenta_bancaria')
+    else:
+        form = CuentaBancariaForm(instance=cuenta)
+    return render(request, 'cuenta_bancaria/editar.html', {'form': form})
+
+@permission_required('tienda.delete_cuentabancaria')
+def eliminar_cuenta_bancaria(request):
+    cliente = Cliente.objects.get(usuario=request.user)
+    cuenta = CuentaBancaria.objects.get(cliente=cliente)
+    if request.method == 'POST':
+        cuenta.delete()
+        return redirect('ver_cuenta_bancaria')
+
+    return render(request, 'cuenta_bancaria/confirmar_eliminacion.html', {'cuenta': cuenta})
+
+@permission_required('tienda.view_datosvendedor')
+def ver_datos_vendedor(request):
+    try:
+        vendedor = Vendedor.objects.get(usuario=request.user)
+        datos = DatosVendedor.objects.get(vendedor=vendedor)
+        return render(request, 'datos_vendedor/ver.html', {'datos': datos})
+    except (Vendedor.DoesNotExist, DatosVendedor.DoesNotExist):
+        return redirect('crear_datos_vendedor')
+
+@permission_required('tienda.add_datosvendedor')
+def crear_datos_vendedor(request):
+    vendedor = Vendedor.objects.get(usuario=request.user)
+
+    if DatosVendedor.objects.filter(vendedor=vendedor).exists():
+        return redirect('ver_datos_vendedor')
+
+    if request.method == 'POST':
+        formulario = DatosVendedorForm(request.POST)
+        if formulario.is_valid():
+            datos = formulario.save(commit=False)
+            datos.vendedor = vendedor
+            datos.save()
+            messages.success(request, 'Datos del vendedor guardados correctamente.')
+            return redirect('ver_datos_vendedor')
+    else:
+        formulario = DatosVendedorForm()
+
+    return render(request, 'datos_vendedor/crear.html', {'form': formulario})
+
+@permission_required('tienda.change_datosvendedor')
+def editar_datos_vendedor(request):
+    vendedor = Vendedor.objects.get(usuario=request.user)
+    datos = DatosVendedor.objects.get(vendedor=vendedor)
+
+    if request.method == 'POST':
+        formulario = DatosVendedorForm(request.POST, instance=datos)
+        if formulario.is_valid():
+            formulario.save()
+            messages.success(request, 'Datos actualizados correctamente.')
+            return redirect('ver_datos_vendedor')
+    else:
+        formulario = DatosVendedorForm(instance=datos)
+
+    return render(request, 'datos_vendedor/editar.html', {'form': formulario})
+
+@permission_required('tienda.delete_datosvendedor')
+def eliminar_datos_vendedor(request):
+    vendedor = Vendedor.objects.get(usuario=request.user)
+    datos = DatosVendedor.objects.get(vendedor=vendedor)
+
+    if request.method == 'POST':
+        datos.delete()
+        messages.success(request, 'Datos eliminados correctamente.')
+        return redirect('crear_datos_vendedor')
+
+    return render(request, 'datos_vendedor/confirmar_eliminacion.html', {'datos': datos})
+
+def ver_perfil(request):
+    usuario = request.user
+
+    if usuario.rol == Usuario.CLIENTE:
+        return redirect('ver_cuenta_bancaria')
+    elif usuario.rol == Usuario.VENDEDOR:
+        return redirect('ver_datos_vendedor')
+    else:
+        return render(request, 'error.html', {'mensaje': 'Rol no reconocido'})
+
+@permission_required('tienda.change_medicamento')
+def edit_medicamento(request, idMed):
+    vendedor = Vendedor.objects.get(usuario=request.user)
+    medicamento = get_object_or_404(Medicamento, id=idMed, vendedor=vendedor)
+
+    if request.method == 'POST':
+        form = MedicamentoModelForm(request.POST, instance=medicamento)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Medicamento actualizado correctamente.')
+            return redirect('get_medicamento', idMed=idMed)
+    else:
+        form = MedicamentoModelForm(instance=medicamento)
+
+    return render(request, 'medicamentos/medicamento_edit.html', {'edit_medicamento': form, 'medicamento_edited': medicamento})
+
+@permission_required('tienda.delete_medicamento')
+def delete_medicamento(request, idMed):
+    vendedor = Vendedor.objects.get(usuario=request.user)
+    medicamento = get_object_or_404(Medicamento, id=idMed, vendedor=vendedor)
+
+    if request.method == 'POST':
+        medicamento.delete()
+        messages.success(request, 'Medicamento eliminado correctamente.')
+        return redirect('lista_medicamentos')
+
+    return render(request, 'medicamentos/medicamento_confirm_delete.html', {'medicamento': medicamento})
+
+@permission_required('tienda.change_tienda')
 def edit_tienda(request, idTien):
-    tienda = Tienda.objects.get(id=idTien)
+    vendedor = Vendedor.objects.get(usuario=request.user)
+    tienda = get_object_or_404(Tienda, id=idTien, vendedor=vendedor)
 
     if request.method == 'POST':
         formulario = TiendaModelForm(request.POST, instance=tienda)
         if formulario.is_valid():
             formulario.save()
-            messages.success(request, 'Se ha modificado la tienda correctamente')
+            messages.success(request, 'Tienda actualizada correctamente.')
             return redirect('get_tienda', idTien=tienda.id)
     else:
         formulario = TiendaModelForm(instance=tienda)
 
-    return render(request, 'tiendas/tienda_edit.html',{'edit_tienda': formulario, "tienda_edited" : tienda})
+    return render(request, 'tiendas/tienda_edit.html', {'edit_tienda': formulario, 'tienda_edited': tienda})
 
-
-def get_medicamento(request, idMed):
-    medicamento = Medicamento.objects.get(id=idMed)
-    return render(request, 'medicamentos/medicamento_view.html', {'medicamento': medicamento})
-
-def edit_medicamento(request, idMed):
-    medicamento = Medicamento.objects.get(id=idMed)
+@permission_required('tienda.delete_tienda')
+def delete_tienda(request, idTien):
+    vendedor = Vendedor.objects.get(usuario=request.user)
+    tienda = get_object_or_404(Tienda, id=idTien, vendedor=vendedor)
 
     if request.method == 'POST':
-        formulario = MedicamentoModelForm(request.POST, instance=medicamento)
-        if formulario.is_valid():
-            formulario.save()
-            messages.success(request, 'Se ha modificado el medicamento correctamente')
-            return redirect('get_medicamento', idMed=medicamento.id)
-    else:
-        formulario = MedicamentoModelForm(instance=medicamento)
-    
-    return render(request, 'medicamentos/medicamento_edit.html',{'edit_medicamento': formulario, "medicamento_edited" : medicamento})
+        tienda.delete()
+        messages.success(request, 'Tienda eliminada correctamente.')
+        return redirect('lista_tiendas')
+
+    return render(request, 'tiendas/tienda_confirm_delete.html', {'tienda': tienda})

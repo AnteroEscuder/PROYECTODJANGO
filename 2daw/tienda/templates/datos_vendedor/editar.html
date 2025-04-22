@@ -2,14 +2,13 @@
 
 {% block contenido %}
 <div class="container mt-4">
-  <h2>Editar Medicamento: {{ medicamento_edited.nombre }}</h2>
+  <h2>Editar Datos del Vendedor</h2>
   <form method="post">
     {% csrf_token %}
     {% load django_bootstrap5 %}
-    {% csrf_token %}
-    {% bootstrap_form edit_medicamento %}
+    {% bootstrap_form form %}
     <button type="submit" class="btn btn-success">Guardar Cambios</button>
-    <a href="{% url 'get_medicamento' idMed=medicamento_edited.id %}" class="btn btn-secondary">Cancelar</a>
+    <a href="{% url 'ver_datos_vendedor' %}" class="btn btn-secondary">Cancelar</a>
   </form>
 </div>
 {% endblock %}

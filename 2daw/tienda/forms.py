@@ -23,7 +23,7 @@ class LoginForm(AuthenticationForm):
 class MedicamentoModelForm(ModelForm):
     class Meta:
         model = Medicamento
-        fields = ['nombre','descripcion','precio','fecha_caducidad']
+        fields = ['nombre','descripcion','precio','fecha_caducidad', 'vendedor']
         labels = {
             "nombre": ("Nombre del medicamento"),
             "descripcion": ("Descripción del medicamento"),
@@ -33,7 +33,7 @@ class MedicamentoModelForm(ModelForm):
             "descripcion": ("Agrega la información del medicamento")
         }
         widgets = {
-            'fecha_caducidad' : forms.DateInput(attrs={'type':'date'})
+            'fecha_caducidad' : forms.DateInput(format="%Y-%m-%d", attrs={'type':'date'})
         }
 
     def clean(self):
@@ -66,7 +66,7 @@ class MedicamentoModelForm(ModelForm):
 class TiendaModelForm(ModelForm):
     class Meta:
         model = Tienda
-        fields = ['nombre','direccion','telefono']
+        fields = ['nombre','direccion','telefono', 'vendedor']
         labels = {
             "nombre": ("Nombre de la tienda"),
             "direccion": ("Dirección de la tienda"),
@@ -97,3 +97,21 @@ class TiendaModelForm(ModelForm):
 
 
         return self.cleaned_data
+
+class CuentaBancariaForm(forms.ModelForm):
+    class Meta:
+        model = CuentaBancaria
+        fields = ['iban', 'banco', 'moneda']
+        widgets = {
+            'moneda': forms.Select(attrs={'class': 'form-select'}),
+        }
+
+
+class DatosVendedorForm(forms.ModelForm):
+    class Meta:
+        model = DatosVendedor
+        fields = ['direccion', 'direccion_facturacion']
+        widgets = {
+            'direccion': forms.TextInput(attrs={'class': 'form-control'}),
+            'direccion_facturacion': forms.TextInput(attrs={'class': 'form-control'}),
+        }

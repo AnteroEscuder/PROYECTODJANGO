@@ -1,0 +1,13 @@
+{% extends 'estructura/principal.html' %}
+
+{% block contenido %}
+<div class="container mt-4">
+  <h2>Eliminar Tienda</h2>
+  <p>¿Estás seguro de que deseas eliminar la tienda <strong>{{ tienda.nombre }}</strong>?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+    <a href="{% url 'get_tienda' idTien=tienda.id %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

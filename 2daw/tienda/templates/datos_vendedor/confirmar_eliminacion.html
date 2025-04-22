@@ -1,0 +1,13 @@
+{% extends 'estructura/principal.html' %}
+
+{% block contenido %}
+<div class="container mt-4">
+  <h2>¿Eliminar tus datos de vendedor?</h2>
+  <p>¿Estás seguro de que deseas eliminar tus datos?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+    <a href="{% url 'ver_datos_vendedor' %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

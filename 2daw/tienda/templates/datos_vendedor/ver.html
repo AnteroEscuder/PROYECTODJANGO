@@ -1,0 +1,16 @@
+{% extends 'estructura/principal.html' %}
+
+{% block contenido %}
+<div class="container mt-4">
+  <h2>Mis Datos de Vendedor</h2>
+  <ul class="list-group">
+    <li class="list-group-item"><strong>Dirección:</strong> {{ datos.direccion }}</li>
+    <li class="list-group-item"><strong>Dirección de Facturación:</strong> {{ datos.direccion_facturacion }}</li>
+  </ul>
+  <a href="{% url 'editar_datos_vendedor' %}" class="btn btn-warning mt-3">Editar</a>
+  <form action="{% url 'eliminar_datos_vendedor' %}" method="post" class="mt-2">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+  </form>
+</div>
+{% endblock %}

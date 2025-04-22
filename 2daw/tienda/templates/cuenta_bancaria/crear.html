@@ -1,0 +1,13 @@
+{% extends 'estructura/principal.html' %}
+
+{% block contenido %}
+<div class="container mt-4">
+  <h2>Crear Cuenta Bancaria</h2>
+  <form method="post">
+    {% csrf_token %}
+    {% load django_bootstrap5 %}
+    {% bootstrap_form form %}
+    <button type="submit" class="btn btn-primary">Guardar</button>
+  </form>
+</div>
+{% endblock %}

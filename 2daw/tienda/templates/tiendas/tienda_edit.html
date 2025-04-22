@@ -1,20 +1,14 @@
 {% extends 'estructura/principal.html' %}
 
-{% block titulo %}
-    <title>Formulario edición tienda</title>
-{% endblock %}
-
 {% block contenido %}
-    <div class="container mt-5 mb-5">
-        <h2>Editar Tienda</h2>
-
-        <form method="post" action="{% url 'edit_tienda' tienda_edited.id %}">
-            
-            {% load django_bootstrap5 %}
-            {% csrf_token %}
-            {% bootstrap_form edit_tienda %}
-           
-            <button type="submit" class="btn btn-primary mb-2">Editar</button>
-        </form>
-    </div>
+<div class="container mt-4">
+  <h2>Editar Tienda: {{ tienda_edited.nombre }}</h2>
+  <form method="post">
+    {% csrf_token %}
+    {% load django_bootstrap5 %}
+    {% bootstrap_form edit_tienda %}
+    <button type="submit" class="btn btn-success">Guardar Cambios</button>
+    <a href="{% url 'get_tienda' idTien=tienda_edited.id %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
 {% endblock %}

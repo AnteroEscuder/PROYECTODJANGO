@@ -1,0 +1,14 @@
+{% extends 'estructura/principal.html' %}
+{% load django_bootstrap5 %} 
+
+{% block contenido %}
+<div class="container mt-4">
+  <h2>Crear Medicamento</h2>
+  <form method="post">
+    {% csrf_token %}
+    {% bootstrap_form formulario %}
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+  </form>
+</div>
+{% endblock %}

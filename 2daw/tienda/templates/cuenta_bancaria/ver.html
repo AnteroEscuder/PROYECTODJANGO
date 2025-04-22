@@ -1,0 +1,17 @@
+{% extends 'estructura/principal.html' %}
+
+{% block contenido %}
+<div class="container mt-4">
+  <h2>Mi Cuenta Bancaria</h2>
+  <ul class="list-group">
+    <li class="list-group-item"><strong>IBAN:</strong> {{ cuenta.iban }}</li>
+    <li class="list-group-item"><strong>Banco:</strong> {{ cuenta.banco }}</li>
+    <li class="list-group-item"><strong>Moneda:</strong> {{ cuenta.get_moneda_display }}</li>
+  </ul>
+  <a href="{% url 'editar_cuenta_bancaria' %}" class="btn btn-warning mt-3">Editar</a>
+  <form action="{% url 'eliminar_cuenta_bancaria' %}" method="post" class="mt-2">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+  </form>
+</div>
+{% endblock %}
