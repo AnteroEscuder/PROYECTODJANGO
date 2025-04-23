@@ -23,7 +23,7 @@ class LoginForm(AuthenticationForm):
 class MedicamentoModelForm(ModelForm):
     class Meta:
         model = Medicamento
-        fields = ['nombre','descripcion','precio','fecha_caducidad', 'vendedor']
+        fields = ['nombre','descripcion','precio','fecha_caducidad']
         labels = {
             "nombre": ("Nombre del medicamento"),
             "descripcion": ("Descripción del medicamento"),
@@ -66,7 +66,7 @@ class MedicamentoModelForm(ModelForm):
 class TiendaModelForm(ModelForm):
     class Meta:
         model = Tienda
-        fields = ['nombre','direccion','telefono', 'vendedor']
+        fields = ['nombre','direccion','telefono']
         labels = {
             "nombre": ("Nombre de la tienda"),
             "direccion": ("Dirección de la tienda"),
@@ -106,6 +106,20 @@ class CuentaBancariaForm(forms.ModelForm):
             'moneda': forms.Select(attrs={'class': 'form-select'}),
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        iban = cleaned_data.get('iban')
+        banco = cleaned_data.get('banco')
+
+        if iban:
+            import re
+            if not re.match(r'^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$', iban):
+                self.add_error('iban', 'IBAN inválido. Debe comenzar con 2 letras, 2 números y contener entre 10 y 30 caracteres alfanuméricos adicionales.')
+
+        if banco and len(banco.strip()) < 3:
+            self.add_error('banco', 'El nombre del banco debe tener al menos 3 caracteres.')
+
+        return cleaned_data
 
 class DatosVendedorForm(forms.ModelForm):
     class Meta:
@@ -115,3 +129,16 @@ class DatosVendedorForm(forms.ModelForm):
             'direccion': forms.TextInput(attrs={'class': 'form-control'}),
             'direccion_facturacion': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        direccion = cleaned_data.get('direccion')
+        direccion_facturacion = cleaned_data.get('direccion_facturacion')
+
+        if direccion and len(direccion.strip()) < 10:
+            self.add_error('direccion', 'La dirección debe tener al menos 10 caracteres.')
+
+        if direccion_facturacion and len(direccion_facturacion.strip()) < 10:
+            self.add_error('direccion_facturacion', 'La dirección de facturación debe tener al menos 10 caracteres.')
+
+        return cleaned_data

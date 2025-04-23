@@ -26,3 +26,9 @@ urlpatterns = [
     path('vendedor/datos/eliminar/', views.eliminar_datos_vendedor, name='eliminar_datos_vendedor'),
     path('perfil/', views.ver_perfil, name='ver_perfil'),
 ]
+
+from django.conf.urls import handler404
+
+handler404 = views.error_404_view
+
+handler500 = views.error_500_view

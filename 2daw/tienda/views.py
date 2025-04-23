@@ -8,6 +8,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import permission_required, user_passes_test
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponseForbidden, Http404
+
 
 # Create your views here.
 def index(request):
@@ -81,7 +83,10 @@ def login_view(request):
 
 @permission_required('tienda.add_medicamento')
 def create_medicamento(request):
-    vendedor = Vendedor.objects.get(usuario=request.user)
+    try:
+        vendedor = Vendedor.objects.get(usuario=request.user)
+    except Vendedor.DoesNotExist:
+        raise Http404("Vendedor no encontrado")
 
     if request.method == 'POST':
         form = MedicamentoModelForm(request.POST)
@@ -103,7 +108,10 @@ def lista_tiendas(request):
 
 @permission_required('tienda.add_tienda')
 def create_tienda(request):
-    vendedor = Vendedor.objects.get(usuario=request.user)
+    try:
+        vendedor = Vendedor.objects.get(usuario=request.user)
+    except Vendedor.DoesNotExist:
+        raise Http404("Vendedor no encontrado")
 
     if request.method == 'POST':
         formulario = TiendaModelForm(request.POST)
@@ -119,16 +127,26 @@ def create_tienda(request):
     return render(request, 'tiendas/tiendas_form.html', {'formulario': formulario})
 
 def get_tienda(request, idTien):
-    tienda = Tienda.objects.get(id=idTien)
+    try:
+        tienda = Tienda.objects.get(id=idTien)
+    except Tienda.DoesNotExist:
+        raise Http404("Tienda no encontrada")
     return render(request, 'tiendas/tienda_view.html', {'tienda': tienda})
 
 def get_medicamento(request, idMed):
-    medicamento = Medicamento.objects.get(id=idMed)
+    try:
+        medicamento = Medicamento.objects.get(id=idMed)
+    except Medicamento.DoesNotExist:
+        raise Http404("Tienda no encontrada")
     return render(request, 'medicamentos/medicamento_view.html', {'medicamento': medicamento})
 
 @permission_required('tienda.add_cuentabancaria')
 def ver_o_crear_cuenta_bancaria(request):
-    cliente = Cliente.objects.get(usuario=request.user)
+    try:
+        cliente = Cliente.objects.get(usuario=request.user)
+    except Cliente.DoesNotExist:
+        raise Http404("Cliente no encontrado")
+
     try:
         cuenta = CuentaBancaria.objects.get(cliente=cliente)
         return render(request, 'cuenta_bancaria/ver.html', {'cuenta': cuenta})
@@ -147,8 +165,16 @@ def ver_o_crear_cuenta_bancaria(request):
 
 @permission_required('tienda.change_cuentabancaria')
 def editar_cuenta_bancaria(request):
-    cliente = Cliente.objects.get(usuario=request.user)
-    cuenta = CuentaBancaria.objects.get(cliente=cliente)
+    try:
+        cliente = Cliente.objects.get(usuario=request.user)
+    except Cliente.DoesNotExist:
+        raise Http404("Cliente no encontrado")
+
+    try:
+        cuenta = CuentaBancaria.objects.get(cliente=cliente)
+    except CuentaBancaria.DoesNotExist:
+        raise Http404("Cuenta no encontrado")
+
     if request.method == 'POST':
         form = CuentaBancariaForm(request.POST, instance=cuenta)
         if form.is_valid():
@@ -160,8 +186,16 @@ def editar_cuenta_bancaria(request):
 
 @permission_required('tienda.delete_cuentabancaria')
 def eliminar_cuenta_bancaria(request):
-    cliente = Cliente.objects.get(usuario=request.user)
-    cuenta = CuentaBancaria.objects.get(cliente=cliente)
+    try:
+        cliente = Cliente.objects.get(usuario=request.user)
+    except Cliente.DoesNotExist:
+        raise Http404("Cliente no encontrado")
+
+    try:
+        cuenta = CuentaBancaria.objects.get(cliente=cliente)
+    except CuentaBancaria.DoesNotExist:
+        raise Http404("Cuenta no encontrado")
+
     if request.method == 'POST':
         cuenta.delete()
         return redirect('ver_cuenta_bancaria')
@@ -179,7 +213,10 @@ def ver_datos_vendedor(request):
 
 @permission_required('tienda.add_datosvendedor')
 def crear_datos_vendedor(request):
-    vendedor = Vendedor.objects.get(usuario=request.user)
+    try:
+        vendedor = Vendedor.objects.get(usuario=request.user)
+    except Vendedor.DoesNotExist:
+        raise Http404("Vendedor no encontrado")
 
     if DatosVendedor.objects.filter(vendedor=vendedor).exists():
         return redirect('ver_datos_vendedor')
@@ -199,8 +236,15 @@ def crear_datos_vendedor(request):
 
 @permission_required('tienda.change_datosvendedor')
 def editar_datos_vendedor(request):
-    vendedor = Vendedor.objects.get(usuario=request.user)
-    datos = DatosVendedor.objects.get(vendedor=vendedor)
+    try:
+        vendedor = Vendedor.objects.get(usuario=request.user)
+    except Vendedor.DoesNotExist:
+        raise Http404("Vendedor no encontrado")
+
+    try:
+        datos = DatosVendedor.objects.get(vendedor=vendedor)
+    except DatosVendedor.DoesNotExist:
+        raise Http404("Datos delvendedor no encontrados")
 
     if request.method == 'POST':
         formulario = DatosVendedorForm(request.POST, instance=datos)
@@ -215,8 +259,15 @@ def editar_datos_vendedor(request):
 
 @permission_required('tienda.delete_datosvendedor')
 def eliminar_datos_vendedor(request):
-    vendedor = Vendedor.objects.get(usuario=request.user)
-    datos = DatosVendedor.objects.get(vendedor=vendedor)
+    try:
+        vendedor = Vendedor.objects.get(usuario=request.user)
+    except Vendedor.DoesNotExist:
+        raise Http404("Vendedor no encontrado")
+
+    try:
+        datos = DatosVendedor.objects.get(vendedor=vendedor)
+    except DatosVendedor.DoesNotExist:
+        raise Http404("Datos delvendedor no encontrados")
 
     if request.method == 'POST':
         datos.delete()
@@ -237,8 +288,15 @@ def ver_perfil(request):
 
 @permission_required('tienda.change_medicamento')
 def edit_medicamento(request, idMed):
-    vendedor = Vendedor.objects.get(usuario=request.user)
-    medicamento = get_object_or_404(Medicamento, id=idMed, vendedor=vendedor)
+    try:
+        vendedor = Vendedor.objects.get(usuario=request.user)
+    except Vendedor.DoesNotExist:
+        raise Http404("Vendedor no encontrado")
+
+    try:
+        medicamento = get_object_or_404(Medicamento, id=idMed, vendedor=vendedor)
+    except Medicamento.DoesNotExist:
+        raise Http404("Medicamento no encontrados")
 
     if request.method == 'POST':
         form = MedicamentoModelForm(request.POST, instance=medicamento)
@@ -253,8 +311,15 @@ def edit_medicamento(request, idMed):
 
 @permission_required('tienda.delete_medicamento')
 def delete_medicamento(request, idMed):
-    vendedor = Vendedor.objects.get(usuario=request.user)
-    medicamento = get_object_or_404(Medicamento, id=idMed, vendedor=vendedor)
+    try:
+        vendedor = Vendedor.objects.get(usuario=request.user)
+    except Vendedor.DoesNotExist:
+        raise Http404("Vendedor no encontrado")
+
+    try:
+        medicamento = get_object_or_404(Medicamento, id=idMed, vendedor=vendedor)
+    except Medicamento.DoesNotExist:
+        raise Http404("Medicamento no encontrados")
 
     if request.method == 'POST':
         medicamento.delete()
@@ -265,8 +330,16 @@ def delete_medicamento(request, idMed):
 
 @permission_required('tienda.change_tienda')
 def edit_tienda(request, idTien):
-    vendedor = Vendedor.objects.get(usuario=request.user)
-    tienda = get_object_or_404(Tienda, id=idTien, vendedor=vendedor)
+
+    try:
+        vendedor = Vendedor.objects.get(usuario=request.user)
+    except Vendedor.DoesNotExist:
+        raise Http404("Vendedor no encontrado")
+
+    try:
+        tienda = get_object_or_404(Tienda, id=idTien, vendedor=vendedor)
+    except Tienda.DoesNotExist:
+        raise Http404("Tienda no encontrada")
 
     if request.method == 'POST':
         formulario = TiendaModelForm(request.POST, instance=tienda)
@@ -281,8 +354,16 @@ def edit_tienda(request, idTien):
 
 @permission_required('tienda.delete_tienda')
 def delete_tienda(request, idTien):
-    vendedor = Vendedor.objects.get(usuario=request.user)
-    tienda = get_object_or_404(Tienda, id=idTien, vendedor=vendedor)
+
+    try:
+        vendedor = Vendedor.objects.get(usuario=request.user)
+    except Vendedor.DoesNotExist:
+        raise Http404("Vendedor no encontrado")
+
+    try:
+        tienda = get_object_or_404(Tienda, id=idTien, vendedor=vendedor)
+    except Tienda.DoesNotExist:
+        raise Http404("Tienda no encontrada")
 
     if request.method == 'POST':
         tienda.delete()
@@ -290,3 +371,9 @@ def delete_tienda(request, idTien):
         return redirect('lista_tiendas')
 
     return render(request, 'tiendas/tienda_confirm_delete.html', {'tienda': tienda})
+
+def error_500_view(request, exception):
+    return render(request, 'errores/error_500.html', status=500)
+
+def error_404_view(request, exception):
+    return render(request, 'errores/error_404.html', status=404)

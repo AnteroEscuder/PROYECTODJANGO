@@ -45,9 +45,11 @@
                 </li>
                 {%endif%}
 
+                {%if perms.tienda.view_medicamento %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'lista_medicamentos' %}">Medicamentos</a>
                 </li>
+                {%endif%}
 
                 {%if perms.tienda.add_medicamento %}
                 <li class="nav-item">

@@ -1,0 +1,9 @@
+{% extends 'estructura/principal.html' %}
+
+{% block contenido %}
+<div class="container mt-5 text-center">
+  <h1 class="text-danger">404 - No encontrado</h1>
+  <p>La página o recurso que buscas no existe.</p>
+  <a href="{% url 'home' %}" class="btn btn-primary">Volver al inicio</a>
+</div>
+{% endblock %}
