@@ -142,3 +142,34 @@ class DatosVendedorForm(forms.ModelForm):
             self.add_error('direccion_facturacion', 'La dirección de facturación debe tener al menos 10 caracteres.')
 
         return cleaned_data
+        
+class InventarioModelForm(forms.ModelForm):
+    class Meta:
+        model = Inventario
+        fields = ['tienda', 'medicamento', 'cantidad']
+        help_texts = {
+            'tienda': 'Selecciona la tienda',
+            'medicamento': 'Selecciona el medicamento',
+            'cantidad': 'Cantidad disponible en tienda'
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request", None)
+        super(InventarioModelForm, self).__init__(*args, **kwargs)
+
+        if self.request:
+            tiendasdisponibles = Tienda.objects.filter(vendedor_id=self.request.user.vendedor).all()
+            self.fields['tienda'] = forms.ModelChoiceField(
+                queryset=tiendasdisponibles,
+                widget=forms.Select,
+                required=True,
+                empty_label="Ninguna"
+            )
+
+class PedidoForm(forms.ModelForm):
+    class Meta:
+        model = Pedido
+        fields = ['medicamentos']
+        widgets = {
+            'medicamentos': forms.CheckboxSelectMultiple()
+        }

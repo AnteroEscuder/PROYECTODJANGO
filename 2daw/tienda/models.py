@@ -40,6 +40,10 @@ class Vendedor(models.Model):
     def __str__(self):
         return self.usuario.username
     
+class Inventario(models.Model):
+    tienda = models.ForeignKey('Tienda', on_delete=models.CASCADE)
+    medicamento = models.ForeignKey('Medicamento', on_delete=models.CASCADE)
+    cantidad = models.IntegerField()
 
 class Medicamento(models.Model):
     nombre = models.CharField(max_length=100)
@@ -82,3 +86,11 @@ class DatosVendedor(models.Model):
 
     def __str__(self):
         return f"Datos de {self.vendedor.usuario.username}"
+
+class Pedido(models.Model):
+    cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
+    medicamentos = models.ManyToManyField('Medicamento')
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Pedido {self.id} de {self.cliente.usuario.username}"

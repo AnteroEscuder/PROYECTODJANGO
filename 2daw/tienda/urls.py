@@ -25,6 +25,11 @@ urlpatterns = [
     path('vendedor/datos/editar/', views.editar_datos_vendedor, name='editar_datos_vendedor'),
     path('vendedor/datos/eliminar/', views.eliminar_datos_vendedor, name='eliminar_datos_vendedor'),
     path('perfil/', views.ver_perfil, name='ver_perfil'),
+    path('crear/inventario/', views.crear_inventario, name='crear_inventario'),
+    path('tienda/<int:id_tienda>/medicamentos/', views.listar_medicamentos_tienda, name='listar_medicamentos_tienda'),
+    path('inventario/<int:id>/editar/', views.editar_inventario, name='editar_inventario'),
+    path('inventario/<int:id>/eliminar/', views.eliminar_inventario, name='eliminar_inventario'),
+    path('pedido/crear/', views.crear_pedido, name='crear_pedido'),
 ]
 
 from django.conf.urls import handler404

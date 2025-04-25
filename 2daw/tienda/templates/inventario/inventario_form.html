@@ -1,0 +1,9 @@
+{% extends "estructura/principal.html" %}
+{% block contenido %}
+<form method="post">
+    {% load django_bootstrap5 %}
+    {% csrf_token %}
+    {% bootstrap_form crear_inventario %}
+    {% bootstrap_button "Guardar" button_type="submit" button_class="btn-primary" %}
+</form>
+{% endblock %}

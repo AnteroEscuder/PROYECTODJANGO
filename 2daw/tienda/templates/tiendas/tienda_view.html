@@ -8,6 +8,11 @@
 
 <div class="me-1">
   <div class="mb-4 mt-3 text-end me-2">
+
+    <a class="btn btn-lg btn-outline-success me-2" href="{% url 'listar_medicamentos_tienda' tienda.id %}">
+      {% bs_icon 'cart4' %} Ver Stock
+    </a>
+
     <a class="btn btn-lg btn-outline-primary me-2" href="{% url 'edit_tienda' tienda.id %}">
       {% bs_icon 'pencil' %} Editar
     </a>
@@ -19,6 +24,7 @@
         {% bs_icon 'trash' %} Eliminar
       </button>
     </form>
+    
   </div>
 </div>
 

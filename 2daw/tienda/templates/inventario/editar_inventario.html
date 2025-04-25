@@ -1,0 +1,11 @@
+{% extends 'estructura/principal.html' %}
+{% block contenido %}
+<h2>Editar cantidad de {{ inventario.medicamento.nombre }}</h2>
+<form method="post">
+    {% csrf_token %}
+    {% load django_bootstrap5 %}
+    {% bootstrap_form form %}
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a href="{% url 'listar_medicamentos_tienda' inventario.tienda.id %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

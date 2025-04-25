@@ -1,0 +1,9 @@
+{% extends 'estructura/principal.html' %}
+{% block contenido %}
+<h2>¿Seguro que quieres eliminar {{ inventario.medicamento.nombre }} de {{ inventario.tienda.nombre }}?</h2>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a href="{% url 'listar_medicamentos_tienda' inventario.tienda.id %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

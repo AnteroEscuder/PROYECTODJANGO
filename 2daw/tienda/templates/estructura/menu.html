@@ -69,6 +69,12 @@
                 </li>
                 {%endif%}
 
+                {%if perms.tienda.add_pedido %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'crear_pedido' %}">Nuevo pedido</a>
+                </li>
+                {%endif%}
+
                 {%if request.user.is_authenticated %}
                 <li class="nav-item">
                     <a href="{% url 'ver_perfil' %}" class="nav-link">Ver Perfil</a>

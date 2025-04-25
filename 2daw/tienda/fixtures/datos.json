@@ -3,8 +3,8 @@
     "model": "admin.logentry",
     "pk": 1,
     "fields": {
-        "action_time": "2025-04-22T02:27:48.326",
-        "user": 3,
+        "action_time": "2025-04-25T16:44:52.094",
+        "user": 2,
         "content_type": 3,
         "object_id": "1",
         "object_repr": "Clientes",
@@ -16,13 +16,65 @@
     "model": "admin.logentry",
     "pk": 2,
     "fields": {
-        "action_time": "2025-04-22T02:28:23.639",
-        "user": 3,
+        "action_time": "2025-04-25T16:45:26.495",
+        "user": 2,
         "content_type": 3,
         "object_id": "2",
         "object_repr": "Vendedores",
         "action_flag": 2,
         "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 3,
+    "fields": {
+        "action_time": "2025-04-25T16:45:35.420",
+        "user": 2,
+        "content_type": 3,
+        "object_id": "2",
+        "object_repr": "Vendedores",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 4,
+    "fields": {
+        "action_time": "2025-04-25T17:28:50.276",
+        "user": 2,
+        "content_type": 3,
+        "object_id": "1",
+        "object_repr": "Clientes",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 5,
+    "fields": {
+        "action_time": "2025-04-25T17:30:31.113",
+        "user": 2,
+        "content_type": 3,
+        "object_id": "1",
+        "object_repr": "Clientes",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 6,
+    "fields": {
+        "action_time": "2025-04-25T17:31:32.756",
+        "user": 2,
+        "content_type": 3,
+        "object_id": "1",
+        "object_repr": "Clientes",
+        "action_flag": 2,
+        "change_message": "[]"
     }
 },
 {
@@ -209,252 +261,324 @@
     "model": "auth.permission",
     "pk": 21,
     "fields": {
-        "name": "Can add user",
+        "name": "Can add medicamento",
         "content_type": 6,
-        "codename": "add_usuario"
+        "codename": "add_medicamento"
     }
 },
 {
     "model": "auth.permission",
     "pk": 22,
     "fields": {
-        "name": "Can change user",
+        "name": "Can change medicamento",
         "content_type": 6,
-        "codename": "change_usuario"
+        "codename": "change_medicamento"
     }
 },
 {
     "model": "auth.permission",
     "pk": 23,
     "fields": {
-        "name": "Can delete user",
+        "name": "Can delete medicamento",
         "content_type": 6,
-        "codename": "delete_usuario"
+        "codename": "delete_medicamento"
     }
 },
 {
     "model": "auth.permission",
     "pk": 24,
     "fields": {
-        "name": "Can view user",
+        "name": "Can view medicamento",
         "content_type": 6,
-        "codename": "view_usuario"
+        "codename": "view_medicamento"
     }
 },
 {
     "model": "auth.permission",
     "pk": 25,
     "fields": {
-        "name": "Can add cliente",
+        "name": "Can add tienda",
         "content_type": 7,
-        "codename": "add_cliente"
+        "codename": "add_tienda"
     }
 },
 {
     "model": "auth.permission",
     "pk": 26,
     "fields": {
-        "name": "Can change cliente",
+        "name": "Can change tienda",
         "content_type": 7,
-        "codename": "change_cliente"
+        "codename": "change_tienda"
     }
 },
 {
     "model": "auth.permission",
     "pk": 27,
     "fields": {
-        "name": "Can delete cliente",
+        "name": "Can delete tienda",
         "content_type": 7,
-        "codename": "delete_cliente"
+        "codename": "delete_tienda"
     }
 },
 {
     "model": "auth.permission",
     "pk": 28,
     "fields": {
-        "name": "Can view cliente",
+        "name": "Can view tienda",
         "content_type": 7,
-        "codename": "view_cliente"
+        "codename": "view_tienda"
     }
 },
 {
     "model": "auth.permission",
     "pk": 29,
     "fields": {
-        "name": "Can add cuenta bancaria",
+        "name": "Can add user",
         "content_type": 8,
-        "codename": "add_cuentabancaria"
+        "codename": "add_usuario"
     }
 },
 {
     "model": "auth.permission",
     "pk": 30,
     "fields": {
-        "name": "Can change cuenta bancaria",
+        "name": "Can change user",
         "content_type": 8,
-        "codename": "change_cuentabancaria"
+        "codename": "change_usuario"
     }
 },
 {
     "model": "auth.permission",
     "pk": 31,
     "fields": {
-        "name": "Can delete cuenta bancaria",
+        "name": "Can delete user",
         "content_type": 8,
-        "codename": "delete_cuentabancaria"
+        "codename": "delete_usuario"
     }
 },
 {
     "model": "auth.permission",
     "pk": 32,
     "fields": {
-        "name": "Can view cuenta bancaria",
+        "name": "Can view user",
         "content_type": 8,
-        "codename": "view_cuentabancaria"
+        "codename": "view_usuario"
     }
 },
 {
     "model": "auth.permission",
     "pk": 33,
     "fields": {
-        "name": "Can add vendedor",
+        "name": "Can add cliente",
         "content_type": 9,
-        "codename": "add_vendedor"
+        "codename": "add_cliente"
     }
 },
 {
     "model": "auth.permission",
     "pk": 34,
     "fields": {
-        "name": "Can change vendedor",
+        "name": "Can change cliente",
         "content_type": 9,
-        "codename": "change_vendedor"
+        "codename": "change_cliente"
     }
 },
 {
     "model": "auth.permission",
     "pk": 35,
     "fields": {
-        "name": "Can delete vendedor",
+        "name": "Can delete cliente",
         "content_type": 9,
-        "codename": "delete_vendedor"
+        "codename": "delete_cliente"
     }
 },
 {
     "model": "auth.permission",
     "pk": 36,
     "fields": {
-        "name": "Can view vendedor",
+        "name": "Can view cliente",
         "content_type": 9,
-        "codename": "view_vendedor"
+        "codename": "view_cliente"
     }
 },
 {
     "model": "auth.permission",
     "pk": 37,
     "fields": {
-        "name": "Can add tienda",
+        "name": "Can add cuenta bancaria",
         "content_type": 10,
-        "codename": "add_tienda"
+        "codename": "add_cuentabancaria"
     }
 },
 {
     "model": "auth.permission",
     "pk": 38,
     "fields": {
-        "name": "Can change tienda",
+        "name": "Can change cuenta bancaria",
         "content_type": 10,
-        "codename": "change_tienda"
+        "codename": "change_cuentabancaria"
     }
 },
 {
     "model": "auth.permission",
     "pk": 39,
     "fields": {
-        "name": "Can delete tienda",
+        "name": "Can delete cuenta bancaria",
         "content_type": 10,
-        "codename": "delete_tienda"
+        "codename": "delete_cuentabancaria"
     }
 },
 {
     "model": "auth.permission",
     "pk": 40,
     "fields": {
-        "name": "Can view tienda",
+        "name": "Can view cuenta bancaria",
         "content_type": 10,
-        "codename": "view_tienda"
+        "codename": "view_cuentabancaria"
     }
 },
 {
     "model": "auth.permission",
     "pk": 41,
     "fields": {
-        "name": "Can add medicamento",
+        "name": "Can add inventario",
         "content_type": 11,
-        "codename": "add_medicamento"
+        "codename": "add_inventario"
     }
 },
 {
     "model": "auth.permission",
     "pk": 42,
     "fields": {
-        "name": "Can change medicamento",
+        "name": "Can change inventario",
         "content_type": 11,
-        "codename": "change_medicamento"
+        "codename": "change_inventario"
     }
 },
 {
     "model": "auth.permission",
     "pk": 43,
     "fields": {
-        "name": "Can delete medicamento",
+        "name": "Can delete inventario",
         "content_type": 11,
-        "codename": "delete_medicamento"
+        "codename": "delete_inventario"
     }
 },
 {
     "model": "auth.permission",
     "pk": 44,
     "fields": {
-        "name": "Can view medicamento",
+        "name": "Can view inventario",
         "content_type": 11,
-        "codename": "view_medicamento"
+        "codename": "view_inventario"
     }
 },
 {
     "model": "auth.permission",
     "pk": 45,
     "fields": {
-        "name": "Can add datos vendedor",
+        "name": "Can add vendedor",
         "content_type": 12,
-        "codename": "add_datosvendedor"
+        "codename": "add_vendedor"
     }
 },
 {
     "model": "auth.permission",
     "pk": 46,
     "fields": {
-        "name": "Can change datos vendedor",
+        "name": "Can change vendedor",
         "content_type": 12,
-        "codename": "change_datosvendedor"
+        "codename": "change_vendedor"
     }
 },
 {
     "model": "auth.permission",
     "pk": 47,
     "fields": {
-        "name": "Can delete datos vendedor",
+        "name": "Can delete vendedor",
         "content_type": 12,
-        "codename": "delete_datosvendedor"
+        "codename": "delete_vendedor"
     }
 },
 {
     "model": "auth.permission",
     "pk": 48,
     "fields": {
-        "name": "Can view datos vendedor",
+        "name": "Can view vendedor",
         "content_type": 12,
+        "codename": "view_vendedor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 49,
+    "fields": {
+        "name": "Can add datos vendedor",
+        "content_type": 13,
+        "codename": "add_datosvendedor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 50,
+    "fields": {
+        "name": "Can change datos vendedor",
+        "content_type": 13,
+        "codename": "change_datosvendedor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 51,
+    "fields": {
+        "name": "Can delete datos vendedor",
+        "content_type": 13,
+        "codename": "delete_datosvendedor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 52,
+    "fields": {
+        "name": "Can view datos vendedor",
+        "content_type": 13,
         "codename": "view_datosvendedor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 53,
+    "fields": {
+        "name": "Can add pedido",
+        "content_type": 14,
+        "codename": "add_pedido"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 54,
+    "fields": {
+        "name": "Can change pedido",
+        "content_type": 14,
+        "codename": "change_pedido"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 55,
+    "fields": {
+        "name": "Can delete pedido",
+        "content_type": 14,
+        "codename": "delete_pedido"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 56,
+    "fields": {
+        "name": "Can view pedido",
+        "content_type": 14,
+        "codename": "view_pedido"
     }
 },
 {
@@ -463,11 +587,16 @@
     "fields": {
         "name": "Clientes",
         "permissions": [
-            29,
-            30,
-            31,
-            32,
-            44
+            37,
+            38,
+            39,
+            40,
+            24,
+            53,
+            54,
+            55,
+            56,
+            28
         ]
     }
 },
@@ -477,18 +606,22 @@
     "fields": {
         "name": "Vendedores",
         "permissions": [
-            45,
-            46,
-            47,
-            48,
+            49,
+            50,
+            51,
+            52,
             41,
             42,
             43,
             44,
-            37,
-            38,
-            39,
-            40
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28
         ]
     }
 },
@@ -537,7 +670,7 @@
     "pk": 6,
     "fields": {
         "app_label": "tienda",
-        "model": "usuario"
+        "model": "medicamento"
     }
 },
 {
@@ -545,7 +678,7 @@
     "pk": 7,
     "fields": {
         "app_label": "tienda",
-        "model": "cliente"
+        "model": "tienda"
     }
 },
 {
@@ -553,7 +686,7 @@
     "pk": 8,
     "fields": {
         "app_label": "tienda",
-        "model": "cuentabancaria"
+        "model": "usuario"
     }
 },
 {
@@ -561,7 +694,7 @@
     "pk": 9,
     "fields": {
         "app_label": "tienda",
-        "model": "vendedor"
+        "model": "cliente"
     }
 },
 {
@@ -569,7 +702,7 @@
     "pk": 10,
     "fields": {
         "app_label": "tienda",
-        "model": "tienda"
+        "model": "cuentabancaria"
     }
 },
 {
@@ -577,7 +710,7 @@
     "pk": 11,
     "fields": {
         "app_label": "tienda",
-        "model": "medicamento"
+        "model": "inventario"
     }
 },
 {
@@ -585,44 +718,63 @@
     "pk": 12,
     "fields": {
         "app_label": "tienda",
+        "model": "vendedor"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 13,
+    "fields": {
+        "app_label": "tienda",
         "model": "datosvendedor"
     }
 },
 {
-    "model": "sessions.session",
-    "pk": "ald66ohnc04g5ddwbjm2evv22glknnlz",
+    "model": "contenttypes.contenttype",
+    "pk": 14,
     "fields": {
-        "session_data": "eyJmZWNoYV9pbmljaW8iOiIyMi8wNC8yMDI1IDAyOjQ0In0:1u71kh:ymcTgdm_-6eLWdqhbYgirjOipfUB1L1bGBfCdCZzgjU",
-        "expire_date": "2025-05-06T02:44:43.876"
+        "app_label": "tienda",
+        "model": "pedido"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "1mres2jgi83jq86qobghr7i7skujloyr",
+    "fields": {
+        "session_data": ".eJxVzDsKAyEUheGthFsH4_WFTpk-axC9ajQJCvOoQvYeBqaZ9vwf5wslUw2-9UZtwARC37i6CS70Bc2kFFzBh22tflvy7FvayXmLgd657yG9Qn8ORqOvc4tsJ-yoC3uMlD_3w54OalgqTOBkyUIn1IRIPMikyCmbtZaWSxOds9pml4whjLygzCZisYSBG-t05PD7A3WOQCU:1u8KHd:2hsHqr0zhE0eZ-0rjF5wVlhX2kKf5wWlEPIOVYyEj7M",
+        "expire_date": "2025-05-09T16:44:05.316"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "4036tr9asalipgb81maahz9lyf6u0qkt",
+    "fields": {
+        "session_data": ".eJxVjEsOwiAUAK9i3togUCjQpXvPQB48ENRA0s_KeHfTpJtuZybzhZxiQV9bjbXDBFLfuLpJLvVFmGmQcAWP21r8tqTZV4IJhjMLGN-p7YJe2J6dxd7WuQa2J-ywC3t0Sp_70Z4GBZeybx2XJFFzblQWdnSktHFZjzZaF4xzJgVlKCPnSFa4zAelDI1Opkgia_j9AV4lQA8:1u8L2j:S_fP83NNchsufMsrVIVqTAlU_LnpNtGYdT0qpoQ0_2s",
+        "expire_date": "2025-05-09T17:32:45.472"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "rznn5jqbke8xwgib5wnspwqbujpybsul",
+    "fields": {
+        "session_data": "eyJmZWNoYV9pbmljaW8iOiIyNS8wNC8yMDI1IDE3OjM0In0:1u8L4A:qZxzcLl3tKj4Jb4_v0kz1yej7jwvE3OUugn1tbl2QAc",
+        "expire_date": "2025-05-09T17:34:14.173"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "zba0y7sv2uxivsdnsu68egpt1brw4i8b",
+    "fields": {
+        "session_data": "eyJmZWNoYV9pbmljaW8iOiIyNS8wNC8yMDI1IDE2OjQwIn0:1u8KDz:RpG5YBSjHE7XGsXpn9gAHcmTofm1LLZh3KmqXQ9D87o",
+        "expire_date": "2025-05-09T16:40:19.213"
     }
 },
 {
     "model": "tienda.usuario",
     "pk": 1,
     "fields": {
-        "password": "pbkdf2_sha256$870000$ACeaS2Xg1xLJMmXtGsRnrl$OfPcG7CfVJlqiki4i6GdwOFjYYcxkTWVkhqV2WEHvOw=",
-        "last_login": "2025-04-22T02:44:09.509",
-        "is_superuser": false,
-        "username": "Cliente2",
-        "first_name": "",
-        "last_name": "",
-        "email": "c@gmail.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2025-04-22T02:18:01.711",
-        "rol": 2,
-        "groups": [
-            1
-        ],
-        "user_permissions": []
-    }
-},
-{
-    "model": "tienda.usuario",
-    "pk": 2,
-    "fields": {
-        "password": "pbkdf2_sha256$870000$EqVQgfJZRSUEWs9WOe61vP$AafFw+GChiqlrwATviZHfe0y9xCQbRGYJ4JgnXTBW1w=",
-        "last_login": "2025-04-22T02:44:33.951",
+        "password": "pbkdf2_sha256$870000$NlsHrioLwOhGEN1fca4DPf$e16KX/iUdKGc0KPCGeuaPkPJOhJ30jzuQHKiuiFtIuA=",
+        "last_login": "2025-04-25T16:41:32.092",
         "is_superuser": false,
         "username": "vendedor1",
         "first_name": "",
@@ -630,7 +782,7 @@
         "email": "v@gmail.com",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2025-04-22T02:18:24.288",
+        "date_joined": "2025-04-25T16:41:31.808",
         "rol": 3,
         "groups": [
             2
@@ -640,10 +792,10 @@
 },
 {
     "model": "tienda.usuario",
-    "pk": 3,
+    "pk": 2,
     "fields": {
-        "password": "pbkdf2_sha256$870000$SYuFgAZx0hUmAoIpMFKoWY$/T7lDsgKy/Yf2HtNBr2BWXpCIEudBQ60x8FmYWywpmI=",
-        "last_login": "2025-04-22T02:43:48.176",
+        "password": "pbkdf2_sha256$870000$RbTf3FmGNjUYv3hHTp30Vw$ynA9LBH6oRHlTq6BAu9FuQWIBGsgwEpcsRCPEYgeR7s=",
+        "last_login": "2025-04-25T16:44:05.279",
         "is_superuser": true,
         "username": "root",
         "first_name": "",
@@ -651,9 +803,51 @@
         "email": "",
         "is_staff": true,
         "is_active": true,
-        "date_joined": "2025-04-22T02:26:03.881",
+        "date_joined": "2025-04-25T16:43:43.662",
         "rol": 2,
         "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "tienda.usuario",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$870000$PfKac2ex3AFwxjv7EWEi9u$KyOIJUf3rJSLe+5R7lfJcAeyn5DrCXFC68VhtpT+8Ek=",
+        "last_login": "2025-04-25T17:32:45.429",
+        "is_superuser": false,
+        "username": "Cliente2",
+        "first_name": "",
+        "last_name": "",
+        "email": "c@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2025-04-25T17:27:24.641",
+        "rol": 2,
+        "groups": [
+            1
+        ],
+        "user_permissions": []
+    }
+},
+{
+    "model": "tienda.usuario",
+    "pk": 4,
+    "fields": {
+        "password": "pbkdf2_sha256$870000$HGbPMrgJ3wYvxaZeiIffPD$OlK75mhI6TbtdwKXG5YYS+gZbn1LttCO7XxBTotHAqc=",
+        "last_login": "2025-04-25T17:33:32.569",
+        "is_superuser": false,
+        "username": "Cliente1",
+        "first_name": "",
+        "last_name": "",
+        "email": "c1@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2025-04-25T17:32:11.548",
+        "rol": 2,
+        "groups": [
+            1
+        ],
         "user_permissions": []
     }
 },
@@ -661,44 +855,94 @@
     "model": "tienda.cliente",
     "pk": 1,
     "fields": {
-        "usuario": 1
+        "usuario": 3
+    }
+},
+{
+    "model": "tienda.cliente",
+    "pk": 2,
+    "fields": {
+        "usuario": 4
     }
 },
 {
     "model": "tienda.vendedor",
     "pk": 1,
     "fields": {
-        "usuario": 2
+        "usuario": 1
+    }
+},
+{
+    "model": "tienda.inventario",
+    "pk": 2,
+    "fields": {
+        "tienda": 1,
+        "medicamento": 1,
+        "cantidad": 22
+    }
+},
+{
+    "model": "tienda.inventario",
+    "pk": 3,
+    "fields": {
+        "tienda": 1,
+        "medicamento": 3,
+        "cantidad": 36
     }
 },
 {
     "model": "tienda.medicamento",
-    "pk": 2,
+    "pk": 1,
     "fields": {
-        "nombre": "aaaaaaaaaaaaaaaaaaaaaaa",
-        "descripcion": "sdasdadadadsdasdasdasd",
+        "nombre": "alalalalalalalalalalalalalal",
+        "descripcion": "alalalalalalalalalal",
         "precio": 123,
         "fecha_caducidad": "2025-05-09",
         "vendedor": 1
     }
 },
 {
-    "model": "tienda.cuentabancaria",
-    "pk": 1,
+    "model": "tienda.medicamento",
+    "pk": 2,
     "fields": {
-        "cliente": 1,
-        "iban": "LALA",
-        "banco": "lalalaa",
-        "moneda": "GBP"
+        "nombre": "alalalalalalalalalalalalalalalalalalalal",
+        "descripcion": "alalalalalalalalalalalalalalalal",
+        "precio": 123,
+        "fecha_caducidad": "2025-05-10",
+        "vendedor": 1
     }
 },
 {
-    "model": "tienda.datosvendedor",
+    "model": "tienda.medicamento",
+    "pk": 3,
+    "fields": {
+        "nombre": "Pacoloco",
+        "descripcion": "lalalalalalalalalalalalalalalala",
+        "precio": 12,
+        "fecha_caducidad": "2025-05-11",
+        "vendedor": 1
+    }
+},
+{
+    "model": "tienda.tienda",
     "pk": 1,
     "fields": {
-        "vendedor": 1,
-        "direccion": "asdadaaaa",
-        "direccion_facturacion": "adsdaas"
+        "nombre": "alalalalalal",
+        "direccion": "alalalalalalalalalalalalalalalal",
+        "telefono": "600000000",
+        "vendedor": 1
+    }
+},
+{
+    "model": "tienda.pedido",
+    "pk": 1,
+    "fields": {
+        "cliente": 1,
+        "fecha": "2025-04-25T17:27:34.520",
+        "medicamentos": [
+            1,
+            3
+        ]
     }
 }
 ]

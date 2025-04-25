@@ -36,8 +36,16 @@ def is_vendedor(user):
 
 @permission_required('tienda.view_medicamento')
 def lista_medicamentos(request):
-    listado_medicamentos = Medicamento.objects.all()
-    return render(request, 'medicamentos/lista_medicamentos.html', {'medicamentos_mostrar' : listado_medicamentos})
+    buscar = request.GET.get('buscar', '')
+    medicamentos = Medicamento.objects.all()
+
+    if buscar:
+        medicamentos = medicamentos.filter(nombre__icontains=buscar)
+
+    return render(request, 'medicamentos/lista_medicamentos.html', {
+        'medicamentos_mostrar': medicamentos,
+        'buscar': buscar,
+    })
 
 def registrar_usuario(request):
     if request.method == 'POST':
@@ -371,6 +379,86 @@ def delete_tienda(request, idTien):
         return redirect('lista_tiendas')
 
     return render(request, 'tiendas/tienda_confirm_delete.html', {'tienda': tienda})
+
+@permission_required('tienda.add_inventario')
+def crear_inventario(request):
+    if request.method == 'POST':
+        formulario = InventarioModelForm(request.POST, request=request)
+        if formulario.is_valid():
+            inventario = Inventario.objects.filter(
+                tienda=formulario.cleaned_data['tienda'],
+                medicamento=formulario.cleaned_data['medicamento']
+            ).first()
+            if inventario is None:
+                formulario.save()
+            else:
+                inventario.cantidad += formulario.cleaned_data['cantidad']
+                inventario.save()
+            messages.success(request, 'Medicamento añadido o actualizado en la tienda.')
+            return redirect('lista_tiendas')
+    else:
+        formulario = InventarioModelForm(None, request=request)
+
+    return render(request, 'inventario/inventario_form.html', {'crear_inventario': formulario})
+
+@permission_required('tienda.view_inventario')
+def listar_medicamentos_tienda(request, id_tienda):
+    tienda = get_object_or_404(Tienda, id=id_tienda)
+    buscar = request.GET.get("buscar", "")
+    inventario = Inventario.objects.filter(tienda=tienda)
+
+    if buscar:
+        inventario = inventario.filter(medicamento__nombre__icontains=buscar)
+
+    return render(request, 'inventario/listar_inventario.html', {
+        'tienda': tienda,
+        'inventario': inventario,
+        'buscar': buscar
+    })
+
+@permission_required('tienda.change_inventario')
+def editar_inventario(request, id):
+    inventario = get_object_or_404(Inventario, id=id)
+
+    if request.method == 'POST':
+        form = InventarioModelForm(request.POST, instance=inventario, request=request)        
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Cantidad modificada correctamente.")
+            return redirect('listar_medicamentos_tienda', id_tienda=inventario.tienda.id)
+    else:
+        form = InventarioModelForm(instance=inventario)
+
+    return render(request, 'inventario/editar_inventario.html', {'form': form, 'inventario': inventario})
+
+@permission_required('tienda.delete_inventario')
+def eliminar_inventario(request, id):
+    inventario = get_object_or_404(Inventario, id=id)
+
+    if request.method == 'POST':
+        inventario.delete()
+        messages.success(request, "Producto eliminado de la tienda.")
+        return redirect('listar_medicamentos_tienda', id_tienda=inventario.tienda.id)
+
+    return render(request, 'inventario/eliminar_inventario.html', {'inventario': inventario})
+
+@permission_required('tienda.add_pedido')
+def crear_pedido(request):
+    cliente = get_object_or_404(Cliente, usuario=request.user)
+
+    if request.method == 'POST':
+        form = PedidoForm(request.POST)
+        if form.is_valid():
+            pedido = form.save(commit=False)
+            pedido.cliente = cliente
+            pedido.save()
+            form.save_m2m()
+            messages.success(request, "Pedido realizado correctamente.")
+            return redirect('inicio')
+    else:
+        form = PedidoForm()
+
+    return render(request, 'pedidos/crear_pedido.html', {'form': form})
 
 def error_500_view(request, exception):
     return render(request, 'errores/error_500.html', status=500)
