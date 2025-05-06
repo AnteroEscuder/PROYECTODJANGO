@@ -747,10 +747,18 @@
 },
 {
     "model": "sessions.session",
-    "pk": "4036tr9asalipgb81maahz9lyf6u0qkt",
+    "pk": "721phuvc4vkrh8rnju419zjzr19mblwd",
     "fields": {
-        "session_data": ".eJxVjEsOwiAUAK9i3togUCjQpXvPQB48ENRA0s_KeHfTpJtuZybzhZxiQV9bjbXDBFLfuLpJLvVFmGmQcAWP21r8tqTZV4IJhjMLGN-p7YJe2J6dxd7WuQa2J-ywC3t0Sp_70Z4GBZeybx2XJFFzblQWdnSktHFZjzZaF4xzJgVlKCPnSFa4zAelDI1Opkgia_j9AV4lQA8:1u8L2j:S_fP83NNchsufMsrVIVqTAlU_LnpNtGYdT0qpoQ0_2s",
-        "expire_date": "2025-05-09T17:32:45.472"
+        "session_data": ".eJxVjEEKwyAQAP-y5yJujKI59t43yLquNW0xEJNT6d9LIIf2OjPMGyLtW417lzXOGSYY4PLLEvFT2iHyg9p9Uby0bZ2TOhJ12q5uS5bX9Wz_BpV6hQmCKTLYjJYRWZPJI4fRi7XGa-NSCN56Cdk5xqQLGnEJi2ck7XywScPnC9CiN0s:1uCQh8:_Vval3lhtRuZuCglDKHwkOu8oZViBoy36ZI4zr3Q28Q",
+        "expire_date": "2025-05-21T00:23:22.693"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "cyrwi8ddkmk9u4b2vx0lp31q1e7dvmda",
+    "fields": {
+        "session_data": ".eJxVjDkOwjAQAL-CtkbO-kxwSc8bLNu7xgaUSDkqxN9RpDRpZ0bzhcK5xtDGltsEHrDv0HYKlb0geqXgCiFuaw3bwnNoBB7kmaWY3zzugl5xfE4iT-M6tyT2RBx2EY-J-HM_2tOgxqWCh0JZapdYMSGqKG1im26FDDLHODA65sSa3KDJul5nsgaNHqSloo2V8PsDso1BUQ:1uCQgg:J8iMheRZ1Rze6ZrsIdjFU6xVd04KEBQ8iauy-cU6_jo",
+        "expire_date": "2025-05-21T00:22:54.641"
     }
 },
 {
@@ -774,7 +782,7 @@
     "pk": 1,
     "fields": {
         "password": "pbkdf2_sha256$870000$NlsHrioLwOhGEN1fca4DPf$e16KX/iUdKGc0KPCGeuaPkPJOhJ30jzuQHKiuiFtIuA=",
-        "last_login": "2025-04-25T16:41:32.092",
+        "last_login": "2025-05-07T00:22:54.605",
         "is_superuser": false,
         "username": "vendedor1",
         "first_name": "",
@@ -795,7 +803,7 @@
     "pk": 2,
     "fields": {
         "password": "pbkdf2_sha256$870000$RbTf3FmGNjUYv3hHTp30Vw$ynA9LBH6oRHlTq6BAu9FuQWIBGsgwEpcsRCPEYgeR7s=",
-        "last_login": "2025-04-25T16:44:05.279",
+        "last_login": "2025-05-07T00:23:22.662",
         "is_superuser": true,
         "username": "root",
         "first_name": "",
@@ -891,6 +899,15 @@
     }
 },
 {
+    "model": "tienda.inventario",
+    "pk": 4,
+    "fields": {
+        "tienda": 2,
+        "medicamento": 1,
+        "cantidad": 122
+    }
+},
+{
     "model": "tienda.medicamento",
     "pk": 1,
     "fields": {
@@ -930,6 +947,16 @@
         "nombre": "alalalalalal",
         "direccion": "alalalalalalalalalalalalalalalal",
         "telefono": "600000000",
+        "vendedor": 1
+    }
+},
+{
+    "model": "tienda.tienda",
+    "pk": 2,
+    "fields": {
+        "nombre": "Loqquito",
+        "direccion": "LALALALALALA",
+        "telefono": "222333444",
         "vendedor": 1
     }
 },

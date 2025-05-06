@@ -142,11 +142,12 @@ def get_tienda(request, idTien):
     return render(request, 'tiendas/tienda_view.html', {'tienda': tienda})
 
 def get_medicamento(request, idMed):
-    try:
-        medicamento = Medicamento.objects.get(id=idMed)
-    except Medicamento.DoesNotExist:
-        raise Http404("Tienda no encontrada")
-    return render(request, 'medicamentos/medicamento_view.html', {'medicamento': medicamento})
+    medicamento = get_object_or_404(Medicamento, id=idMed)
+    tiendas = Inventario.objects.filter(medicamento=medicamento)
+    return render(request, 'medicamentos/medicamento_view.html', {
+        'medicamento': medicamento,
+        'tiendas': tiendas,
+    })
 
 @permission_required('tienda.add_cuentabancaria')
 def ver_o_crear_cuenta_bancaria(request):
