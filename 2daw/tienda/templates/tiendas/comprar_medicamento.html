@@ -1,0 +1,20 @@
+{% extends 'estructura/principal.html' %}
+
+{% block contenido %}
+
+<h2>Comprar {{medicamento.nombre}}</h2>
+
+{% if precio %}
+<p><strong>Precio unitario:</strong> {{ precio }} €</p>
+{% else %}
+<p style="color: red;">No se ha podido obtener el precio.</p>
+{% endif %}
+
+<form method="form">
+    {% csrf_token %}
+    {% load django_bootstrap5 %}
+    {% bootstrap_form form %}
+    <button type="submit" class="btn btn-success">Comprar</button>
+</form>
+
+{% endblock %}

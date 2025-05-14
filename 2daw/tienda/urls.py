@@ -30,6 +30,8 @@ urlpatterns = [
     path('inventario/<int:id>/editar/', views.editar_inventario, name='editar_inventario'),
     path('inventario/<int:id>/eliminar/', views.eliminar_inventario, name='eliminar_inventario'),
     path('pedido/crear/', views.crear_pedido, name='crear_pedido'),
+    path('comprar/<int:medicamento_id>', views.comprar_medicamento, name='comprar_medicamento'),
+    path('compra/confirmada/', views.confirmar_compra, name='confirmar_compra')
 ]
 
 from django.conf.urls import handler404

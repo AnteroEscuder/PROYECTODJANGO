@@ -44,6 +44,7 @@ class Inventario(models.Model):
     tienda = models.ForeignKey('Tienda', on_delete=models.CASCADE)
     medicamento = models.ForeignKey('Medicamento', on_delete=models.CASCADE)
     cantidad = models.IntegerField()
+    precio = models.IntegerField(default=0)
 
 class Medicamento(models.Model):
     nombre = models.CharField(max_length=100)
@@ -94,3 +95,14 @@ class Pedido(models.Model):
 
     def __str__(self):
         return f"Pedido {self.id} de {self.cliente.usuario.username}"
+
+
+class Compra(models.Model):
+    cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
+    tienda = models.ForeignKey('Tienda', on_delete=models.CASCADE)
+    medicamentos = models.ForeignKey('Medicamento', on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField()
+
+
+    def __str__(self):
+        return f"{self.cliente.usuario.username} compró"

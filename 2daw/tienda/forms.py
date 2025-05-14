@@ -146,12 +146,22 @@ class DatosVendedorForm(forms.ModelForm):
 class InventarioModelForm(forms.ModelForm):
     class Meta:
         model = Inventario
-        fields = ['tienda', 'medicamento', 'cantidad']
+        fields = ['tienda', 'medicamento', 'cantidad','precio']
         help_texts = {
             'tienda': 'Selecciona la tienda',
             'medicamento': 'Selecciona el medicamento',
-            'cantidad': 'Cantidad disponible en tienda'
+            'cantidad': 'Cantidad disponible en tienda',
+            'precio': 'Precio del producto'
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        precio = cleaned_data.get('precio')
+
+        if precio <= 0:
+            self.add_error('precio', 'El precio tiene que ser positivo')
+
+        return cleaned_data
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request", None)
@@ -173,3 +183,24 @@ class PedidoForm(forms.ModelForm):
         widgets = {
             'medicamentos': forms.CheckboxSelectMultiple()
         }
+
+
+class CompraForm(forms.Form):
+    tienda = forms.ModelChoiceField(queryset=Tienda.objects.none(), label="Selecciona tienda")
+    cantidad = forms.IntegerField(min_value=1, label="Cantidad")
+
+    def __init__(self, medicamento, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        tiendas_con_stock = Inventario.objects.filter(medicamento=medicamento, cantidad__gt=0)
+        self.fields['tienda'].queryset = Tienda.objects.filter(id__in=tiendas_con_stock.values_list("tienda_id", flat=True))
+        self.medicamento = medicamento
+
+    def clean(self):
+        cleaned_data = super().clean()
+        tienda = cleaned_data.get('tienda')
+        cantidad = cleaned_data.get('cantidad')
+
+        if tienda and cantidad:
+            inventario = Inventario.objects.filter(tienda=tienda, medicamento=self.medicamento).first()
+            if inventario and cantidad > inventario.cantidad:
+                self.add_error('cantidad', f"Solo hay {inventario.cantidad} unidades en stock.")

@@ -6,5 +6,6 @@ admin.site.register(Usuario)
 admin.site.register(Inventario)
 admin.site.register(Medicamento)
 admin.site.register(Tienda)
+admin.site.register(Compra)
 
 # Register your models here.

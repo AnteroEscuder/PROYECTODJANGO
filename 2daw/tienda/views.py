@@ -461,6 +461,62 @@ def crear_pedido(request):
 
     return render(request, 'pedidos/crear_pedido.html', {'form': form})
 
+def comprar_medicamento(request, medicamento_id):
+    # TODO comprobar porque no se guarda, comprobar si bajan la cantidad...
+    medicamento = get_object_or_404(Medicamento, id=medicamento_id)
+    precio = None
+
+    if request.method == 'POST':
+        form = CompraForm(medicamento, request.POST)
+        if form.is_valid():
+            tienda = form.cleaned_data['tienda']
+            cantidad = form.cleaned_data['cantidad']
+            inventario = Inventario.objects.get(tienda=tienda, medicamento=medicamento)
+
+            if inventario.cantidad < cantidad:
+                form.add_error('cantidad', f'Solo hay {inventario.cantidad} unidades disponibles.')
+            else:
+                inventario.cantidad -= cantidad
+                inventario.save()
+
+                cliente = Cliente.objects.get(usuario=request.user)
+
+                Compra.objects.create(
+                    cliente=cliente,
+                    tienda=tienda,
+                    medicamento=medicamento,
+                    cantidad=cantidad,
+                    precio_unitario=inventario.precio
+                )
+                return redirect('confirmar_compra')
+
+        else:
+            # Obtener el precio de la tienda seleccionada (aunque el form sea inválido)
+            tienda = request.POST.get('tienda')
+            if tienda:
+                inventario = Inventario.objects.filter(tienda=tienda, medicamento=medicamento).first()
+                if inventario:
+                    precio = inventario.precio
+
+    else:
+        form = CompraForm(medicamento)
+        # Precio de la primera tienda con stock
+        primera_tienda = form.fields['tienda'].queryset.first()
+        if primera_tienda:
+            inventario = Inventario.objects.filter(tienda=primera_tienda, medicamento=medicamento).first()
+            if inventario:
+                precio = inventario.precio
+
+    return render(request, 'tiendas/comprar_medicamento.html', {
+        'medicamento': medicamento,
+        'form': form,
+        'precio': precio
+    })
+
+
+def confirmar_compra(request):
+    return render(request, 'tiendas/confirmar_compra.html')
+
 def error_500_view(request, exception):
     return render(request, 'errores/error_500.html', status=500)
 

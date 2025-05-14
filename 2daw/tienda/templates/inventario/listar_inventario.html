@@ -26,8 +26,9 @@
             {% for item in inventario %}
             <tr>
                 <td>{{ item.medicamento.nombre }}</td>
-                <td>{{ item.medicamento.precio }} €</td>
-                <td>{{ item.cantidad }}</td>
+                <td>{{ item.precio }} €</td>
+                <!-- <td>{{ item.medicamento.precio }} €</td> -->
+                <td>{{ item.cantidad }} uds</td>
                 <td>
                     <a href="{% url 'editar_inventario' item.id %}" class="btn btn-sm btn-outline-primary">Editar</a>
                     <a href="{% url 'eliminar_inventario' item.id %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
