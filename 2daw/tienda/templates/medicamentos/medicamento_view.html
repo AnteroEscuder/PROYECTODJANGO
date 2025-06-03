@@ -13,6 +13,10 @@
         <a class="btn btn-lg btn-outline-primary me-2" href="{% url 'comprar_medicamento' medicamento.id %}">
       {% bs_icon 'pencil' %} Comprar
     </a>
+        <li><b>Nombre Tienda:</b> {{ item.tienda.nombre }} — <b>Cantidad:</b> {{ item.cantidad }}  — <b>Precio:</b> {{ item.precio }}€
+        <a class="btn btn-lg btn-outline-primary me-2" href="{% url 'anadir_al_carrito' medicamento.id %}">
+      {% bs_icon 'pencil' %} Añadir al carrito
+    </a>
     </li>
 
   {% empty %}

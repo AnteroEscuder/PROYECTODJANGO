@@ -31,7 +31,20 @@ urlpatterns = [
     path('inventario/<int:id>/eliminar/', views.eliminar_inventario, name='eliminar_inventario'),
     path('pedido/crear/', views.crear_pedido, name='crear_pedido'),
     path('comprar/<int:medicamento_id>', views.comprar_medicamento, name='comprar_medicamento'),
-    path('compra/confirmada/', views.confirmar_compra, name='confirmar_compra')
+    path('compra/confirmada/', views.confirmar_compra, name='confirmar_compra'),
+    path('carrito/anadir/<int:medicamento_id>/', views.anadir_al_carrito, name='anadir_al_carrito'),
+    path('carrito/', views.carrito_view, name='carrito'),
+    path('carrito/finalizar/', views.finalizar_compra, name='finalizar_compra'),
+    path('carrito/resumen/<int:pedido_id>/', views.resumen_compra, name='resumen_compra'),
+    path('productos-terceros/', views.productos_terceros, name='productos_terceros'),
+    path('importar-producto/<int:producto_id>/', views.importar_producto, name='importar_producto'),
+    path('editar-linea/<int:linea_id>/', views.editar_linea, name='editar_linea'),
+    path('eliminar-linea/<int:linea_id>/', views.eliminar_linea, name='eliminar_linea'),
+    path('historial/', views.historial_pedidos, name='historial'),
+    path('devolver-pedido/<int:pedido_id>/', views.devolver_pedido, name='devolver_pedido'),
+    path('productos-pedidos/', views.productos_pedidos_por_clientes, name='productos_pedidos_vendedor'),
+    path('devoluciones-pendientes/', views.devoluciones_pendientes, name='devoluciones_pendientes'),
+    path('aceptar-devolucion/<int:devolucion_id>/', views.aceptar_devolucion, name='aceptar_devolucion'),
 ]
 
 from django.conf.urls import handler404

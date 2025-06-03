@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "tienda",
+    "api",
+    "oauth2_provider",
     "debug_toolbar",
     "django_bootstrap5",
     "django_bootstrap_icons"
@@ -132,3 +134,8 @@ AUTH_USER_MODEL = 'tienda.Usuario'
 LOGIN_REDIRECT_URL = 'inicio'
 LOGOUT_REDIRECT_URL = 'inicio'
 
+API_URL = 'http://127.0.0.1:8000'
+API_USERNAME = 'root'
+API_PASSWORD = '1234'
+API_CLIENT_ID = 'f7ZIMPy0Wa4RVqMNbK66xcstp3J1l6OzvqhArtby'
+API_CLIENT_SECRET = 'tienda123'

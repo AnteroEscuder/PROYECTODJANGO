@@ -10,7 +10,7 @@
 <p style="color: red;">No se ha podido obtener el precio.</p>
 {% endif %}
 
-<form method="form">
+<form method="post">
     {% csrf_token %}
     {% load django_bootstrap5 %}
     {% bootstrap_form form %}

@@ -179,10 +179,7 @@ class InventarioModelForm(forms.ModelForm):
 class PedidoForm(forms.ModelForm):
     class Meta:
         model = Pedido
-        fields = ['medicamentos']
-        widgets = {
-            'medicamentos': forms.CheckboxSelectMultiple()
-        }
+        fields = ['cliente']
 
 
 class CompraForm(forms.Form):
@@ -191,9 +188,10 @@ class CompraForm(forms.Form):
 
     def __init__(self, medicamento, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        tiendas_con_stock = Inventario.objects.filter(medicamento=medicamento, cantidad__gt=0)
-        self.fields['tienda'].queryset = Tienda.objects.filter(id__in=tiendas_con_stock.values_list("tienda_id", flat=True))
-        self.medicamento = medicamento
+        if medicamento is not None:
+            self.medicamento = medicamento
+            tiendas_con_stock = Inventario.objects.filter(medicamento=medicamento, cantidad__gt=0)
+            self.fields['tienda'].queryset = Tienda.objects.filter(id__in=tiendas_con_stock.values_list("tienda_id", flat=True))
 
     def clean(self):
         cleaned_data = super().clean()
@@ -202,5 +200,10 @@ class CompraForm(forms.Form):
 
         if tienda and cantidad:
             inventario = Inventario.objects.filter(tienda=tienda, medicamento=self.medicamento).first()
-            if inventario and cantidad > inventario.cantidad:
+            if not inventario:
+                self.add_error('tienda', "No hay stock disponible.")
+            elif cantidad > inventario.cantidad:
                 self.add_error('cantidad', f"Solo hay {inventario.cantidad} unidades en stock.")
+
+class AñadirAlCarritoForm(forms.Form):
+    cantidad = forms.IntegerField(min_value=1, label="Unidades")

@@ -22,5 +22,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("__debug__/", include("debug_toolbar.urls")),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('',include("tienda.urls"))
+    path('',include("tienda.urls")),
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('api/', include('api.urls')),
 ]

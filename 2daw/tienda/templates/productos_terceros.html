@@ -1,0 +1,22 @@
+{% extends 'estructura/principal.html' %}
+
+{% block contenido %}
+
+{% load bootstrap_icons %}
+
+  <h2>Productos de terceros</h2>
+  <div class="row">
+    {% for producto in productos %}
+      <div class="col-md-4">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">{{ producto.nombre }}</h5>
+            <p class="card-text">Tienda: {{ producto.tienda }}</p>
+            <p class="card-text">Precio: {{ producto.precio }}</p>
+            <a href="{% url 'importar_producto' producto.id %}" class="btn btn-primary">Importar</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

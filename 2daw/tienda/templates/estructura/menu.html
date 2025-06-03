@@ -75,6 +75,27 @@
                 </li>
                 {%endif%}
 
+                {%if perms.tienda.add_pedido %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'carrito' %}">Carrito</a>
+                </li>
+                {%endif%}
+
+                {%if perms.tienda.add_pedido %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'historial' %}">Historial Compras</a>
+                </li>
+                {%endif%}
+
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'devoluciones_pendientes' %}">Devoluciones Pendientes</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'productos_terceros' %}">productos_terceros</a>
+                </li>
+
                 {%if request.user.is_authenticated %}
                 <li class="nav-item">
                     <a href="{% url 'ver_perfil' %}" class="nav-link">Ver Perfil</a>

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import Group
+from django.utils import timezone 
 
 def crear_grupos(sender, **kwargs):
     if not Group.objects.filter(name="Clientes").exists():
@@ -26,8 +27,7 @@ class Usuario (AbstractUser):
 
 class Cliente(models.Model):
     usuario = models.OneToOneField(Usuario,
-                                   on_delete= models.CASCADE)
-    
+                                   on_delete= models.CASCADE)    
 
     def __str__(self):
         return self.usuario.username
@@ -76,6 +76,7 @@ class CuentaBancaria(models.Model):
     iban = models.CharField(max_length=34)
     banco = models.CharField(max_length=100)
     moneda = models.CharField(max_length=3, choices=MONEDAS)
+    saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return f"Cuenta de {self.cliente.usuario.username} - {self.iban}"
@@ -90,19 +91,36 @@ class DatosVendedor(models.Model):
 
 class Pedido(models.Model):
     cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
-    medicamentos = models.ManyToManyField('Medicamento')
-    fecha = models.DateTimeField(auto_now_add=True)
+    fecha = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"Pedido {self.id} de {self.cliente.usuario.username}"
 
-
 class Compra(models.Model):
     cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
     tienda = models.ForeignKey('Tienda', on_delete=models.CASCADE)
-    medicamentos = models.ForeignKey('Medicamento', on_delete=models.CASCADE)
+    medicamento = models.ForeignKey('Medicamento', on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField()
+    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
 
     def __str__(self):
         return f"{self.cliente.usuario.username} compró"
+
+class LineaPedido(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='lineas')
+    medicamento = models.ForeignKey('Medicamento', on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.cantidad} x {self.medicamento.nombre}"
+
+class Devolucion(models.Model):
+    linea_pedido = models.ForeignKey('LineaPedido', on_delete=models.CASCADE)
+    cantidad_devuelta = models.PositiveIntegerField()
+    fecha_solicitud = models.DateTimeField(default=timezone.now)
+    aceptado = models.BooleanField(default=False)
+    fecha_aceptacion = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Devolución de {self.cantidad_devuelta}x {self.linea_pedido.medicamento.nombre}"

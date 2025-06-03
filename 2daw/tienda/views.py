@@ -9,7 +9,12 @@ from django.contrib.auth.decorators import permission_required, user_passes_test
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden, Http404
-
+from django.utils.timezone import now
+import requests
+from django.conf import settings
+from django.db import transaction
+from decimal import Decimal
+from django.db import transaction
 
 # Create your views here.
 def index(request):
@@ -462,7 +467,6 @@ def crear_pedido(request):
     return render(request, 'pedidos/crear_pedido.html', {'form': form})
 
 def comprar_medicamento(request, medicamento_id):
-    # TODO comprobar porque no se guarda, comprobar si bajan la cantidad...
     medicamento = get_object_or_404(Medicamento, id=medicamento_id)
     precio = None
 
@@ -480,12 +484,13 @@ def comprar_medicamento(request, medicamento_id):
                 inventario.save()
 
                 cliente = Cliente.objects.get(usuario=request.user)
-
+             
                 Compra.objects.create(
                     cliente=cliente,
                     tienda=tienda,
                     medicamento=medicamento,
                     cantidad=cantidad,
+                    # TODO meter esto en la DB
                     precio_unitario=inventario.precio
                 )
                 return redirect('confirmar_compra')
@@ -513,6 +518,300 @@ def comprar_medicamento(request, medicamento_id):
         'precio': precio
     })
 
+def anadir_al_carrito(request, medicamento_id):
+    # TODO Al añadir la linea que no baje las unidades del medicamento hasta hacer la compra! asi mismo si alguien la tenia que al comprar le de error de que no quedan!! 
+    cliente = get_object_or_404(Cliente, usuario=request.user)
+    medicamento = get_object_or_404(Medicamento, pk=medicamento_id)
+    inventario = Inventario.objects.filter(medicamento=medicamento).first()
+
+    if request.method == "POST":
+        form = AñadirAlCarritoForm(request.POST)
+        if form.is_valid():
+            cantidad = form.cleaned_data['cantidad']
+
+            if inventario and inventario.cantidad >= cantidad:
+                pedido, _ = Pedido.objects.get_or_create(cliente=cliente, fecha__isnull=True)
+
+                linea = LineaPedido.objects.filter(pedido=pedido, medicamento=medicamento).first()
+                if linea:
+                    linea.cantidad += cantidad
+                    linea.save()
+                else:
+                    LineaPedido.objects.create(pedido=pedido, medicamento=medicamento, cantidad=cantidad)
+
+                inventario.cantidad -= cantidad
+                inventario.save()
+                messages.success(request, "Producto añadido al carrito.")
+            else:
+                messages.error(request, "Stock insuficiente.")
+            return redirect('lista_medicamentos')
+    else:
+        form = AñadirAlCarritoForm()
+
+    return render(request, 'anadir_al_carrito.html', {
+        'medicamento': medicamento,
+        'form': form
+    })
+
+def carrito_view(request):
+    cliente = get_object_or_404(Cliente, usuario=request.user)
+    pedido = Pedido.objects.filter(cliente=cliente, fecha__isnull=True).first()
+    lineas = pedido.lineas.all() if pedido else []
+    
+    total = sum(linea.medicamento.precio * linea.cantidad for linea in lineas)
+    tiene_lineas = lineas.exists() if pedido else False
+
+    return render(request, 'carrito.html', {
+        'pedido': pedido,
+        'lineas': lineas,
+        'total': total,
+        'tiene_lineas': tiene_lineas,
+    })
+
+def finalizar_compra(request):
+     # TODO corregir el tema tambien de comprar (se reduce el doble)
+    cliente = get_object_or_404(Cliente, usuario=request.user)
+    cuenta = get_object_or_404(CuentaBancaria, cliente=cliente)
+    pedido = Pedido.objects.filter(cliente=cliente, fecha__isnull=True).first()
+
+    if not pedido:
+        messages.warning(request, "No tienes ningún pedido en curso.")
+        return redirect('carrito')
+
+    lineas = pedido.lineas.all()
+    total = sum(linea.medicamento.precio * linea.cantidad for linea in lineas)
+
+    with transaction.atomic():
+        for linea in lineas:
+            try:
+                inventario = Inventario.objects.get(medicamento=linea.medicamento)
+            except Inventario.DoesNotExist:
+                messages.error(request, f"No hay inventario del medicamento {linea.medicamento}.")
+                return redirect('carrito')
+
+            if inventario.cantidad < linea.cantidad:
+                messages.error(request, f"Stock insuficiente para {linea.medicamento.nombre}.")
+                return redirect('carrito')
+
+            inventario.cantidad -= linea.cantidad
+            inventario.save()
+
+        pedido.fecha = timezone.now()
+        pedido.save()
+
+        if cuenta.saldo > 0:
+            if total <= cuenta.saldo:
+                cuenta.saldo -= Decimal(total)
+                total_pagado = Decimal('0.00')
+            else:
+                total_pagado = Decimal(total) - cuenta.saldo
+                cuenta.saldo = Decimal('0.00')
+            cuenta.save()
+        else:
+            total_pagado = Decimal(total)
+
+    messages.success(request, f"Compra finalizada. Has pagado {total_pagado} €.")
+    return redirect('inicio')
+
+
+def resumen_compra(request, pedido_id):
+    cliente = get_object_or_404(Cliente, usuario=request.user)
+    pedido = get_object_or_404(Pedido, id=pedido_id, cliente=cliente)
+
+    return render(request, 'resumen_compra.html', {
+        'pedido': pedido
+    })
+
+def devolver_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id, cliente__usuario=request.user)
+
+    for linea in pedido.lineas.all():
+        if not Devolucion.objects.filter(linea_pedido=linea).exists():
+            Devolucion.objects.create(
+                linea_pedido=linea,
+                cantidad_devuelta=linea.cantidad,
+                aceptado=False
+            )
+
+    messages.success(request, "Solicitud de devolución enviada. Pendiente de aprobación por el vendedor.")
+    return redirect('historial')
+
+def historial_pedidos(request):
+    cliente = get_object_or_404(Cliente, usuario=request.user)
+    pedidos = Pedido.objects.filter(cliente=cliente, fecha__isnull=False)
+
+    for pedido in pedidos:
+        lineas = pedido.lineas.all()
+        pedido.total = sum(linea.medicamento.precio * linea.cantidad for linea in lineas)
+        pedido.medicamentos = [linea.medicamento.nombre for linea in lineas]
+
+    return render(request, 'carrito/historial.html', {'pedidos': pedidos})
+
+
+def editar_linea(request, linea_id):
+    linea = get_object_or_404(LineaPedido, id=linea_id)
+
+    try:
+        inventario = Inventario.objects.get(medicamento=linea.medicamento)
+        stock_disponible = inventario.cantidad
+    except Inventario.DoesNotExist:
+        stock_disponible = 0
+
+    if request.method == 'POST':
+        nueva_cantidad = int(request.POST.get('cantidad'))
+        cantidad_actual = linea.cantidad
+        diferencia = nueva_cantidad - cantidad_actual
+
+        if nueva_cantidad < 1:
+            messages.error(request, 'Cantidad no válida.')
+        elif diferencia > stock_disponible:
+            messages.error(request, f'No hay suficiente stock. Máximo disponible: {stock_disponible + cantidad_actual}')
+        else:
+            with transaction.atomic():
+                linea.cantidad = nueva_cantidad
+                linea.save()
+
+                inventario.cantidad -= diferencia
+                inventario.save()
+
+            messages.success(request, 'Cantidad actualizada.')
+            return redirect('carrito')
+
+    return render(request, 'carrito/editar_linea.html', {
+        'linea': linea,
+        'stock_disponible': stock_disponible + linea.cantidad
+    })
+
+
+
+def eliminar_linea(request, linea_id):
+    linea = get_object_or_404(LineaPedido, id=linea_id)
+
+    try:
+        inventario = Inventario.objects.get(medicamento=linea.medicamento)
+    except Inventario.DoesNotExist:
+        inventario = None
+
+    with transaction.atomic():
+        if inventario:
+            inventario.cantidad += linea.cantidad
+            inventario.save()
+
+        linea.delete()
+
+    messages.success(request, 'Producto eliminado del carrito.')
+    return redirect('carrito')
+
+
+def obtener_token_oauth():
+    response = requests.post(f'{settings.API_URL}/o/token/', data={
+        'grant_type': 'password',
+        'username': settings.API_USERNAME,
+        'password': settings.API_PASSWORD,
+        'client_id': settings.API_CLIENT_ID,
+        'client_secret': settings.API_CLIENT_SECRET,
+    })
+    return response.json().get('access_token')
+
+
+def productos_terceros(request):
+    vendedor = get_object_or_404(Vendedor, usuario=request.user)
+    medicamentos_importados = Medicamento.objects.filter(vendedor=vendedor).values_list('nombre', flat=True)
+
+    token = obtener_token_oauth()
+    headers = {'Authorization': f'Bearer {token}'}
+    response = requests.get(f"{settings.API_URL}/api/productos/", headers=headers)
+
+    productos = []
+    if response.status_code == 200:
+        productos = response.json()
+
+    nombres_importados = list(medicamentos_importados)
+
+    return render(request, "productos_terceros.html", {
+        "productos": productos,
+        "importados": nombres_importados
+    })
+
+@permission_required('tienda.add_medicamento')
+def importar_producto(request, producto_id):
+    vendedor = get_object_or_404(Vendedor, usuario=request.user)
+    
+    token = obtener_token_oauth()
+    headers = {'Authorization': f'Bearer {token}'}
+    
+    response = requests.get(f"{settings.API_URL}/api/productos/{producto_id}/", headers=headers)
+    if response.status_code != 200:
+        messages.error(request, "No se pudo obtener el producto.")
+        return redirect('productos_terceros')
+
+    producto_data = response.json()
+
+    if Medicamento.objects.filter(nombre=producto_data['nombre'], vendedor=vendedor).exists():
+        messages.warning(request, "Este producto ya ha sido importado.")
+        return redirect('productos_terceros')
+
+    nuevo_medicamento = Medicamento.objects.create(
+        nombre=producto_data.get('nombre', 'Sin nombre'),
+        descripcion=producto_data.get('descripcion', 'Sin descripción'),
+        precio=int(float(producto_data.get('precio', 0))),
+        fecha_caducidad=producto_data.get('fecha_caducidad', '2099-12-31'),
+        vendedor=vendedor
+    )
+
+    tienda = Tienda.objects.filter(vendedor=vendedor).first()
+    if tienda:
+        Inventario.objects.create(
+            tienda=tienda,
+            medicamento=medicamento,
+            cantidad=10,
+            precio=medicamento.precio
+        )
+
+    messages.success(request, "Producto importado correctamente.")
+    return redirect('productos_terceros')
+
+def productos_pedidos_por_clientes(request):
+    vendedor = get_object_or_404(Vendedor, usuario=request.user)
+    medicamentos_vendedor = Medicamento.objects.filter(vendedor=vendedor)
+
+    lineas = LineaPedido.objects.filter(medicamento__in=medicamentos_vendedor).select_related('medicamento', 'pedido__cliente__usuario')
+
+    return render(request, 'vendedores/productos_pedidos_por_clientes.html', {
+        'lineas': lineas
+    })
+
+def devoluciones_pendientes(request):
+    vendedor = get_object_or_404(Vendedor, usuario=request.user)
+    devoluciones = Devolucion.objects.filter(
+        linea_pedido__medicamento__vendedor=vendedor,
+        aceptado=False
+    )
+    return render(request, 'clientes/devoluciones_pendientes.html', {
+        'devoluciones': devoluciones
+    })
+
+def aceptar_devolucion(request, devolucion_id):
+    devolucion = get_object_or_404(Devolucion, id=devolucion_id, aceptado=False)
+    linea = devolucion.linea_pedido
+    cliente = linea.pedido.cliente
+    cuenta = get_object_or_404(CuentaBancaria, cliente=cliente)
+
+    with transaction.atomic():
+        inventario = Inventario.objects.get(medicamento=linea.medicamento)
+        inventario.cantidad += devolucion.cantidad_devuelta
+        inventario.save()
+
+        total_devolver = devolucion.cantidad_devuelta * linea.medicamento.precio
+        cuenta.saldo += total_devolver
+        cuenta.save()
+
+        devolucion.aceptado = True
+        devolucion.fecha_aceptacion = timezone.now()
+        devolucion.save()
+
+        messages.success(request, 'Devolución aceptada y saldo actualizado.')
+        return redirect('devoluciones_pendientes')
 
 def confirmar_compra(request):
     return render(request, 'tiendas/confirmar_compra.html')
@@ -522,3 +821,4 @@ def error_500_view(request, exception):
 
 def error_404_view(request, exception):
     return render(request, 'errores/error_404.html', status=404)
+

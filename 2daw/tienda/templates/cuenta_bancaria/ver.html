@@ -3,6 +3,9 @@
 {% block contenido %}
 <div class="container mt-4">
   <h2>Mi Cuenta Bancaria</h2>
+  <div class="alert alert-info mt-3">
+    <h4>💰 Saldo disponible: {{ cuenta.saldo|floatformat:2 }} €</h4>
+  </div>
   <ul class="list-group">
     <li class="list-group-item"><strong>IBAN:</strong> {{ cuenta.iban }}</li>
     <li class="list-group-item"><strong>Banco:</strong> {{ cuenta.banco }}</li>

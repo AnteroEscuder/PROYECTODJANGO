@@ -1,0 +1,20 @@
+{% extends 'estructura/principal.html' %}
+
+{% block contenido %}
+
+{% load bootstrap_icons %}
+<div class="container mt-4">
+    <h2>Editar cantidad</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="cantidad" class="form-label">Cantidad:</label>
+            <input type="number" name="cantidad" id="cantidad" class="form-control" value="{{ linea.cantidad }}" min="1"
+                max="{{ stock_disponible }}">
+            <p class="text-muted">Stock disponible: {{ stock_disponible }}</p>
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{% url 'carrito' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

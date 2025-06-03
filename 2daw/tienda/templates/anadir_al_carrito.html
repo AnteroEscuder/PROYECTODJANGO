@@ -1,0 +1,16 @@
+{% extends 'estructura/principal.html' %}
+
+{% block contenido %}
+
+{% load bootstrap_icons %}
+
+  <h1>Añadir {{ medicamento.nombre }} al carrito</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Añadir al carrito</button>
+  </form>
+
+  <a href="{% url 'lista_medicamentos' %}">Volver</a>
+{% endblock %}

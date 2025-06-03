@@ -1,0 +1,32 @@
+{% extends 'estructura/principal.html' %}
+{% block contenido %}
+<div class="container mt-4">
+    <h2>📦 Devoluciones pendientes</h2>
+    {% if devoluciones %}
+    <table class="table table-bordered mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Medicamento</th>
+                <th>Cantidad</th>
+                <th>Cliente</th>
+                <th>Fecha solicitud</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for d in devoluciones %}
+            <tr>
+                <td>{{ d.linea_pedido.medicamento.nombre }}</td>
+                <td>{{ d.cantidad_devuelta }}</td>
+                <td>{{ d.linea_pedido.pedido.cliente.usuario.username }}</td>
+                <td>{{ d.fecha_solicitud|date:"d/m/Y H:i" }}</td>
+                <td><a href="{% url 'aceptar_devolucion' d.id %}" class="btn btn-success btn-sm">Aceptar</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info">No hay devoluciones pendientes.</div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'estructura/principal.html' %}
+
+{% block contenido %}
+
+{% load bootstrap_icons %}
+
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-success text-white">
+            <h3>Resumen de tu compra</h3>
+        </div>
+        <div class="card-body">
+            <p><strong>Número de pedido:</strong> {{ pedido.id }}</p>
+            <p><strong>Fecha:</strong> {{ pedido.fecha|date:"d/m/Y H:i" }}</p>
+            <hr>
+            <h5>Productos comprados:</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for linea in pedido.lineas.all %}
+                    <tr>
+                        <td>{{ linea.medicamento.nombre }}</td>
+                        <td>{{ linea.cantidad }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url 'lista_medicamentos' %}" class="btn btn-primary mt-3">Seguir comprando</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
