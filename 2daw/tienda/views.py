@@ -496,7 +496,6 @@ def comprar_medicamento(request, medicamento_id):
                 return redirect('confirmar_compra')
 
         else:
-            # Obtener el precio de la tienda seleccionada (aunque el form sea inválido)
             tienda = request.POST.get('tienda')
             if tienda:
                 inventario = Inventario.objects.filter(tienda=tienda, medicamento=medicamento).first()
@@ -505,7 +504,6 @@ def comprar_medicamento(request, medicamento_id):
 
     else:
         form = CompraForm(medicamento)
-        # Precio de la primera tienda con stock
         primera_tienda = form.fields['tienda'].queryset.first()
         if primera_tienda:
             inventario = Inventario.objects.filter(tienda=primera_tienda, medicamento=medicamento).first()
@@ -518,8 +516,8 @@ def comprar_medicamento(request, medicamento_id):
         'precio': precio
     })
 
+@permission_required('tienda.add_pedido')
 def anadir_al_carrito(request, medicamento_id):
-    # TODO Al añadir la linea que no baje las unidades del medicamento hasta hacer la compra! asi mismo si alguien la tenia que al comprar le de error de que no quedan!! 
     cliente = get_object_or_404(Cliente, usuario=request.user)
     medicamento = get_object_or_404(Medicamento, pk=medicamento_id)
     inventario = Inventario.objects.filter(medicamento=medicamento).first()
@@ -539,8 +537,6 @@ def anadir_al_carrito(request, medicamento_id):
                 else:
                     LineaPedido.objects.create(pedido=pedido, medicamento=medicamento, cantidad=cantidad)
 
-                inventario.cantidad -= cantidad
-                inventario.save()
                 messages.success(request, "Producto añadido al carrito.")
             else:
                 messages.error(request, "Stock insuficiente.")
@@ -553,6 +549,7 @@ def anadir_al_carrito(request, medicamento_id):
         'form': form
     })
 
+@permission_required('tienda.view_pedido')
 def carrito_view(request):
     cliente = get_object_or_404(Cliente, usuario=request.user)
     pedido = Pedido.objects.filter(cliente=cliente, fecha__isnull=True).first()
@@ -568,8 +565,8 @@ def carrito_view(request):
         'tiene_lineas': tiene_lineas,
     })
 
+@permission_required('tienda.add_pedido')
 def finalizar_compra(request):
-     # TODO corregir el tema tambien de comprar (se reduce el doble)
     cliente = get_object_or_404(Cliente, usuario=request.user)
     cuenta = get_object_or_404(CuentaBancaria, cliente=cliente)
     pedido = Pedido.objects.filter(cliente=cliente, fecha__isnull=True).first()
@@ -613,7 +610,7 @@ def finalizar_compra(request):
     messages.success(request, f"Compra finalizada. Has pagado {total_pagado} €.")
     return redirect('inicio')
 
-
+@permission_required('tienda.add_pedido')
 def resumen_compra(request, pedido_id):
     cliente = get_object_or_404(Cliente, usuario=request.user)
     pedido = get_object_or_404(Pedido, id=pedido_id, cliente=cliente)
@@ -622,6 +619,7 @@ def resumen_compra(request, pedido_id):
         'pedido': pedido
     })
 
+@permission_required('tienda.change_pedido')
 def devolver_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id, cliente__usuario=request.user)
 
@@ -636,6 +634,7 @@ def devolver_pedido(request, pedido_id):
     messages.success(request, "Solicitud de devolución enviada. Pendiente de aprobación por el vendedor.")
     return redirect('historial')
 
+@permission_required('tienda.add_pedido')
 def historial_pedidos(request):
     cliente = get_object_or_404(Cliente, usuario=request.user)
     pedidos = Pedido.objects.filter(cliente=cliente, fecha__isnull=False)
@@ -647,7 +646,7 @@ def historial_pedidos(request):
 
     return render(request, 'carrito/historial.html', {'pedidos': pedidos})
 
-
+@permission_required('tienda.add_lineapedido')
 def editar_linea(request, linea_id):
     linea = get_object_or_404(LineaPedido, id=linea_id)
 
@@ -665,25 +664,21 @@ def editar_linea(request, linea_id):
         if nueva_cantidad < 1:
             messages.error(request, 'Cantidad no válida.')
         elif diferencia > stock_disponible:
-            messages.error(request, f'No hay suficiente stock. Máximo disponible: {stock_disponible + cantidad_actual}')
+            messages.error(request, f'No hay suficiente stock. Máximo disponible: {stock_disponible}')
         else:
             with transaction.atomic():
                 linea.cantidad = nueva_cantidad
                 linea.save()
-
-                inventario.cantidad -= diferencia
-                inventario.save()
 
             messages.success(request, 'Cantidad actualizada.')
             return redirect('carrito')
 
     return render(request, 'carrito/editar_linea.html', {
         'linea': linea,
-        'stock_disponible': stock_disponible + linea.cantidad
+        'stock_disponible': stock_disponible
     })
 
-
-
+@permission_required('tienda.delete_lineapedido')
 def eliminar_linea(request, linea_id):
     linea = get_object_or_404(LineaPedido, id=linea_id)
 
@@ -713,7 +708,7 @@ def obtener_token_oauth():
     })
     return response.json().get('access_token')
 
-
+@permission_required('api.add_productotercero')
 def productos_terceros(request):
     vendedor = get_object_or_404(Vendedor, usuario=request.user)
     medicamentos_importados = Medicamento.objects.filter(vendedor=vendedor).values_list('nombre', flat=True)
@@ -771,6 +766,7 @@ def importar_producto(request, producto_id):
     messages.success(request, "Producto importado correctamente.")
     return redirect('productos_terceros')
 
+@permission_required('tienda.view_pedido')
 def productos_pedidos_por_clientes(request):
     vendedor = get_object_or_404(Vendedor, usuario=request.user)
     medicamentos_vendedor = Medicamento.objects.filter(vendedor=vendedor)
@@ -781,6 +777,7 @@ def productos_pedidos_por_clientes(request):
         'lineas': lineas
     })
 
+@permission_required('tienda.view_pedido')
 def devoluciones_pendientes(request):
     vendedor = get_object_or_404(Vendedor, usuario=request.user)
     devoluciones = Devolucion.objects.filter(
@@ -791,6 +788,7 @@ def devoluciones_pendientes(request):
         'devoluciones': devoluciones
     })
 
+@permission_required('tienda.view_pedido')
 def aceptar_devolucion(request, devolucion_id):
     devolucion = get_object_or_404(Devolucion, id=devolucion_id, aceptado=False)
     linea = devolucion.linea_pedido
@@ -813,6 +811,7 @@ def aceptar_devolucion(request, devolucion_id):
         messages.success(request, 'Devolución aceptada y saldo actualizado.')
         return redirect('devoluciones_pendientes')
 
+@permission_required('tienda.add_pedido')
 def confirmar_compra(request):
     return render(request, 'tiendas/confirmar_compra.html')
 

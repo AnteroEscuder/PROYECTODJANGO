@@ -69,32 +69,29 @@
                 </li>
                 {%endif%}
 
-                {%if perms.tienda.add_pedido %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'crear_pedido' %}">Nuevo pedido</a>
-                </li>
-                {%endif%}
-
-                {%if perms.tienda.add_pedido %}
+                {%if perms.tienda.add_lineapedido %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'carrito' %}">Carrito</a>
                 </li>
                 {%endif%}
 
-                {%if perms.tienda.add_pedido %}
+                {%if perms.tienda.add_lineapedido  %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'historial' %}">Historial Compras</a>
                 </li>
                 {%endif%}
 
-                
+                {%if perms.tienda.change_devolucion  %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'devoluciones_pendientes' %}">Devoluciones Pendientes</a>
                 </li>
+                {%endif%}
 
+                {%if perms.api.add_productotercero  %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'productos_terceros' %}">productos_terceros</a>
+                    <a class="nav-link" href="{% url 'productos_terceros' %}">Productos de Terceros</a>
                 </li>
+                {%endif%}
 
                 {%if request.user.is_authenticated %}
                 <li class="nav-item">

@@ -1,16 +1,28 @@
 {% extends 'estructura/principal.html' %}
+{% load bootstrap_icons %}
 
 {% block contenido %}
 
-{% load bootstrap_icons %}
+<div class="container mt-5">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">{% bs_icon 'cart-plus' %} Añadir <strong>{{ medicamento.nombre }}</strong> al carrito</h4>
+    </div>
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-success">
+          {% bs_icon 'plus-circle' %} Añadir al carrito
+        </button>
+        <a href="{% url 'lista_medicamentos' %}" class="btn btn-secondary ms-2">
+          {% bs_icon 'arrow-left' %} Volver
+        </a>
+      </form>
+    </div>
+  </div>
+</div>
 
-  <h1>Añadir {{ medicamento.nombre }} al carrito</h1>
-
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Añadir al carrito</button>
-  </form>
-
-  <a href="{% url 'lista_medicamentos' %}">Volver</a>
 {% endblock %}

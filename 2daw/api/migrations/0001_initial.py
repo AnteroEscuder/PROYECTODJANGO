@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('tienda', '0005_alter_pedido_fecha'),
+        ('tienda', '__first__'),
     ]
 
     operations = [

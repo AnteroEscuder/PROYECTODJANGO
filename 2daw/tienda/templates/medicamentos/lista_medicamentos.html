@@ -1,30 +1,43 @@
 {% extends 'estructura/principal.html' %}
+{% load bootstrap_icons %}
 
 {% block contenido %}
 <div class="container mt-5">
-    <h2>Lista de Medicamentos</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">{% bs_icon 'capsule' %} Lista de Medicamentos</h2>
+        <a href="{% url 'create_medicamento' %}" class="btn btn-success">
+            {% bs_icon 'plus-circle' %} Nuevo Medicamento
+        </a>
+    </div>
 
     <form method="get" class="mb-4">
         <div class="input-group">
             <input type="text" name="buscar" class="form-control" placeholder="Buscar medicamento..." value="{{ buscar }}">
-            <button class="btn btn-primary" type="submit">Buscar</button>
+            <button class="btn btn-primary" type="submit">{% bs_icon 'search' %} Buscar</button>
         </div>
     </form>
 
     {% if medicamentos_mostrar %}
     <div class="row">
         {% for medicamento in medicamentos_mostrar %}
-        <div class="col-md-6 mb-4">
-            {% include 'medicamentos/medicamento.html' %}
-            <div class="text-end me-1">
-                <a class="btn btn-primary me-2" href="{% url 'get_medicamento' medicamento.id %}">Más Información</a>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    {% include 'medicamentos/medicamento.html' %}
+                </div>
+                <div class="card-footer text-end bg-light">
+                    <a class="btn btn-outline-primary btn-sm" href="{% url 'get_medicamento' medicamento.id %}">
+                        {% bs_icon 'info-circle' %} Más Información
+                    </a>
+                </div>
             </div>
         </div>
         {% endfor %}
     </div>
-
     {% else %}
-    <p>No hay medicamentos registrados.</p>
+    <div class="alert alert-warning">
+        No hay medicamentos registrados.
+    </div>
     {% endif %}
 </div>
 {% endblock %}

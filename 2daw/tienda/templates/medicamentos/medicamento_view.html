@@ -1,45 +1,50 @@
 {% extends 'estructura/principal.html' %}
-
-{% block contenido %}
-
 {% load bootstrap_icons %}
+{% block contenido %}
 
 {% include './medicamento.html' %}
 
-<h5>Disponible en tiendas:</h5>
-<ul>
-  {% for item in tiendas %}
-    <li><b>Nombre Tienda:</b> {{ item.tienda.nombre }} — <b>Cantidad:</b> {{ item.cantidad }}  — <b>Precio:</b> {{ item.precio }}€
-        <a class="btn btn-lg btn-outline-primary me-2" href="{% url 'comprar_medicamento' medicamento.id %}">
-      {% bs_icon 'pencil' %} Comprar
-    </a>
-        <li><b>Nombre Tienda:</b> {{ item.tienda.nombre }} — <b>Cantidad:</b> {{ item.cantidad }}  — <b>Precio:</b> {{ item.precio }}€
-        <a class="btn btn-lg btn-outline-primary me-2" href="{% url 'anadir_al_carrito' medicamento.id %}">
-      {% bs_icon 'pencil' %} Añadir al carrito
-    </a>
-    </li>
+<h4 class="mt-5 mb-4 text-primary">🏪 Disponible en tiendas</h4>
 
-  {% empty %}
-    <li>No disponible en ninguna tienda.</li>
-  {% endfor %}
-</ul>
+{% if tiendas %}
+  <div class="row row-cols-1 row-cols-md-2 g-4">
+    {% for item in tiendas %}
+      <div class="col">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-secondary">{{ item.tienda.nombre }}</h5>
+            <p class="card-text">
+              <strong>Cantidad:</strong> {{ item.cantidad }}<br>
+              <strong>Precio:</strong> {{ item.precio }} €
+            </p>
+            <div class="d-flex justify-content-between">
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'anadir_al_carrito' medicamento.id %}">
+                {% bs_icon 'cart-plus' %} Añadir al carrito
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="alert alert-warning">Este medicamento no está disponible en ninguna tienda actualmente.</div>
+{% endif %}
 
-<div class="me-1">
-  <div class="mb-4 mt-3 text-end me-2">
-    <a class="btn btn-lg btn-outline-primary me-2" href="{% url 'edit_medicamento' medicamento.id %}">
+{% if request.user.rol == 'VENDEDOR' %}
+  <div class="text-end mt-5">
+    <a class="btn btn-outline-warning me-2" href="{% url 'edit_medicamento' medicamento.id %}">
       {% bs_icon 'pencil' %} Editar
     </a>
 
     <form method="post" action="{% url 'delete_medicamento' medicamento.id %}" style="display:inline;">
       {% csrf_token %}
-      <button type="submit" class="btn btn-lg btn-outline-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este medicamento?');">
+      <button type="submit" class="btn btn-outline-danger"
+        onclick="return confirm('¿Estás seguro de que deseas eliminar este medicamento?');">
         {% bs_icon 'trash' %} Eliminar
       </button>
     </form>
   </div>
-</div>
+{% endif %}
 
 {% endblock %}
-
-
-<!-- QUITAR BOTONES -->
