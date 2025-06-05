@@ -12,7 +12,6 @@
                     <th>ID</th>
                     <th>Fecha</th>
                     <th>Productos</th>
-                    <th>Estado devolución</th>
                     <th>Total</th>
                     <th>Nombres</th>
                     <th>Acciones</th>
@@ -24,32 +23,35 @@
                     <td>{{ pedido.id }}</td>
                     <td>{{ pedido.fecha }}</td>
                     <td>
-                        <ul class="mb-0">
+                        <ul class="mb-0 list-unstyled">
                             {% for linea in pedido.lineas.all %}
-                            <li>{{ linea.medicamento.nombre }} (x{{ linea.cantidad }})</li>
+                            <li class="mb-2">
+                                <strong>{{ linea.medicamento.nombre }}</strong> (x{{ linea.cantidad }})<br>
+
+                                {% with devolucion=linea.devolucion_set.first %}
+                                {% if devolucion %}
+                                {% if devolucion.aceptado %}
+                                <span class="text-success">✅ Devolución aceptada</span>
+                                {% else %}
+                                <span class="text-warning">⏳ Pendiente</span>
+                                {% endif %}
+                                {% else %}
+                                <span class="text-muted">❌ No solicitada</span><br>
+                                <a href="{% url 'solicitar_devolucion_producto' linea.id %}"
+                                    class="btn btn-outline-danger btn-sm mt-1">
+                                    Devolver producto
+                                </a>
+                                {% endif %}
+                                {% endwith %}
+                            </li>
                             {% endfor %}
                         </ul>
                     </td>
-                    <td>
-                        {% for linea in pedido.lineas.all %}
-                        {% with devolucion=linea.devolucion_set.first %}
-                        {% if devolucion %}
-                        {% if devolucion.aceptado %}
-                        ✅ Devolución aceptada
-                        {% else %}
-                        ⏳ Devolución pendiente
-                        {% endif %}
-                        {% else %}
-                        ❌ No solicitada
-                        {% endif %}
-                        {% endwith %}
-                        <br>
-                        {% endfor %}
-                    </td>
+
                     <td>{{ pedido.total }}€</td>
                     <td>{{ pedido.medicamentos|join:", " }}</td>
                     <td>
-                        <a href="{% url 'devolver_pedido' pedido.id %}" class="btn btn-warning btn-sm">Devolver</a>
+                        <a href="{% url 'devolver_pedido' pedido.id %}" class="btn btn-warning btn-sm">Devolver Pedido</a>
                     </td>
                 </tr>
                 {% endfor %}

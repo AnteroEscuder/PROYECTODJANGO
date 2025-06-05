@@ -17,6 +17,12 @@ class RegistroForm(UserCreationForm):
         model = Usuario
         fields = ('username','email','password1','password2','rol')
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if Usuario.objects.filter(email=email).exists():
+            raise forms.ValidationError("Ya existe un usuario con este correo.")
+        return email
+
 class LoginForm(AuthenticationForm):
     pass
 

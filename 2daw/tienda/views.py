@@ -544,7 +544,7 @@ def anadir_al_carrito(request, medicamento_id):
     else:
         form = AñadirAlCarritoForm()
 
-    return render(request, 'anadir_al_carrito.html', {
+    return render(request, 'carrito/anadir_al_carrito.html', {
         'medicamento': medicamento,
         'form': form
     })
@@ -558,7 +558,7 @@ def carrito_view(request):
     total = sum(linea.medicamento.precio * linea.cantidad for linea in lineas)
     tiene_lineas = lineas.exists() if pedido else False
 
-    return render(request, 'carrito.html', {
+    return render(request, 'carrito/carrito.html', {
         'pedido': pedido,
         'lineas': lineas,
         'total': total,
@@ -615,7 +615,7 @@ def resumen_compra(request, pedido_id):
     cliente = get_object_or_404(Cliente, usuario=request.user)
     pedido = get_object_or_404(Pedido, id=pedido_id, cliente=cliente)
 
-    return render(request, 'resumen_compra.html', {
+    return render(request, 'carrito/resumen_compra.html', {
         'pedido': pedido
     })
 
@@ -810,6 +810,28 @@ def aceptar_devolucion(request, devolucion_id):
 
         messages.success(request, 'Devolución aceptada y saldo actualizado.')
         return redirect('devoluciones_pendientes')
+
+@permission_required('tienda.add_lineapedido')
+def solicitar_devolucion_producto(request, linea_id):
+    linea = get_object_or_404(LineaPedido, id=linea_id, pedido__cliente__usuario=request.user)
+
+    if request.method == 'POST':
+        cantidad = int(request.POST.get('cantidad'))
+
+        if cantidad > linea.cantidad or cantidad <= 0:
+            messages.error(request, "Cantidad no válida.")
+        else:
+            Devolucion.objects.create(
+                linea_pedido=linea,
+                cantidad_devuelta=cantidad,
+                aceptado=False
+            )
+            messages.success(request, "Solicitud de devolución enviada.")
+            return redirect('historial')
+
+    return render(request, 'carrito/solicitar_devolucion_producto.html', {
+        'linea': linea
+    })
 
 @permission_required('tienda.add_pedido')
 def confirmar_compra(request):

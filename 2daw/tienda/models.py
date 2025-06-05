@@ -24,6 +24,7 @@ class Usuario (AbstractUser):
     rol = models.PositiveSmallIntegerField(
         choices= ROLES,default=CLIENTE
     )
+    email = models.EmailField(unique=True)
 
 class Cliente(models.Model):
     usuario = models.OneToOneField(Usuario,

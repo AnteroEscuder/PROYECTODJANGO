@@ -45,6 +45,7 @@ urlpatterns = [
     path('productos-pedidos/', views.productos_pedidos_por_clientes, name='productos_pedidos_vendedor'),
     path('devoluciones-pendientes/', views.devoluciones_pendientes, name='devoluciones_pendientes'),
     path('aceptar-devolucion/<int:devolucion_id>/', views.aceptar_devolucion, name='aceptar_devolucion'),
+    path('devolver-producto/<int:linea_id>/', views.solicitar_devolucion_producto, name='solicitar_devolucion_producto'),
 ]
 
 from django.conf.urls import handler404

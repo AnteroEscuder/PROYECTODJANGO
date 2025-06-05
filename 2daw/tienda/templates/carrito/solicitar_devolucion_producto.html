@@ -1,0 +1,17 @@
+{% extends 'estructura/principal.html' %}
+{% block contenido %}
+<div class="container mt-4">
+    <h2>Solicitar devolución</h2>
+    <p><strong>Producto:</strong> {{ linea.medicamento.nombre }}</p>
+    <p><strong>Cantidad comprada:</strong> {{ linea.cantidad }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="cantidad">Cantidad a devolver:</label>
+            <input type="number" name="cantidad" min="1" max="{{ linea.cantidad }}" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-warning">Solicitar devolución</button>
+    </form>
+</div>
+{% endblock %}
