@@ -112,6 +112,7 @@ class LineaPedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='lineas')
     medicamento = models.ForeignKey('Medicamento', on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1)
+    tienda = models.ForeignKey(Tienda, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"{self.cantidad} x {self.medicamento.nombre}"

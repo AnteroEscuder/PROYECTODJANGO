@@ -139,6 +139,7 @@ def create_tienda(request):
 
     return render(request, 'tiendas/tiendas_form.html', {'formulario': formulario})
 
+@permission_required('tienda.view_tienda')
 def get_tienda(request, idTien):
     try:
         tienda = Tienda.objects.get(id=idTien)
@@ -517,37 +518,41 @@ def comprar_medicamento(request, medicamento_id):
     })
 
 @permission_required('tienda.add_pedido')
-def anadir_al_carrito(request, medicamento_id):
+def anadir_al_carrito(request, medicamento_id, tienda_id):
     cliente = get_object_or_404(Cliente, usuario=request.user)
     medicamento = get_object_or_404(Medicamento, pk=medicamento_id)
-    inventario = Inventario.objects.filter(medicamento=medicamento).first()
+    tienda = get_object_or_404(Tienda, pk=tienda_id)
+    inventario = get_object_or_404(Inventario, medicamento=medicamento, tienda=tienda)
 
     if request.method == "POST":
         form = AñadirAlCarritoForm(request.POST)
         if form.is_valid():
             cantidad = form.cleaned_data['cantidad']
 
-            if inventario and inventario.cantidad >= cantidad:
+            if inventario.cantidad >= cantidad:
                 pedido, _ = Pedido.objects.get_or_create(cliente=cliente, fecha__isnull=True)
 
-                linea = LineaPedido.objects.filter(pedido=pedido, medicamento=medicamento).first()
+                linea = LineaPedido.objects.filter(pedido=pedido, medicamento=medicamento, tienda=tienda).first()
                 if linea:
                     linea.cantidad += cantidad
                     linea.save()
                 else:
-                    LineaPedido.objects.create(pedido=pedido, medicamento=medicamento, cantidad=cantidad)
+                    LineaPedido.objects.create(pedido=pedido, medicamento=medicamento, cantidad=cantidad, tienda=tienda)
 
                 messages.success(request, "Producto añadido al carrito.")
             else:
                 messages.error(request, "Stock insuficiente.")
             return redirect('lista_medicamentos')
     else:
-        form = AñadirAlCarritoForm()
+        form = AñadirAlCarritoForm(initial={'tienda': tienda})
 
     return render(request, 'carrito/anadir_al_carrito.html', {
         'medicamento': medicamento,
-        'form': form
+        'form': form,
+        'tienda': tienda
     })
+
+
 
 @permission_required('tienda.view_pedido')
 def carrito_view(request):
@@ -581,7 +586,7 @@ def finalizar_compra(request):
     with transaction.atomic():
         for linea in lineas:
             try:
-                inventario = Inventario.objects.get(medicamento=linea.medicamento)
+                inventario = Inventario.objects.filter(medicamento=linea.medicamento, tienda=linea.tienda).first()
             except Inventario.DoesNotExist:
                 messages.error(request, f"No hay inventario del medicamento {linea.medicamento}.")
                 return redirect('carrito')
@@ -651,7 +656,7 @@ def editar_linea(request, linea_id):
     linea = get_object_or_404(LineaPedido, id=linea_id)
 
     try:
-        inventario = Inventario.objects.get(medicamento=linea.medicamento)
+        inventario = Inventario.objects.filter(medicamento=linea.medicamento, tienda=linea.tienda).first()
         stock_disponible = inventario.cantidad
     except Inventario.DoesNotExist:
         stock_disponible = 0

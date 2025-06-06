@@ -7,44 +7,44 @@
 <h4 class="mt-5 mb-4 text-primary">🏪 Disponible en tiendas</h4>
 
 {% if tiendas %}
-  <div class="row row-cols-1 row-cols-md-2 g-4">
-    {% for item in tiendas %}
-      <div class="col">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title text-secondary">{{ item.tienda.nombre }}</h5>
-            <p class="card-text">
-              <strong>Cantidad:</strong> {{ item.cantidad }}<br>
-              <strong>Precio:</strong> {{ item.precio }} €
-            </p>
-            <div class="d-flex justify-content-between">
-              <a class="btn btn-sm btn-outline-primary" href="{% url 'anadir_al_carrito' medicamento.id %}">
-                {% bs_icon 'cart-plus' %} Añadir al carrito
-              </a>
-            </div>
-          </div>
+<div class="row row-cols-1 row-cols-md-2 g-4">
+  {% for item in tiendas %}
+  <div class="col">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title text-secondary">{{ item.tienda.nombre }}</h5>
+        <p class="card-text">
+          <strong>Cantidad:</strong> {{ item.cantidad }}<br>
+          <strong>Precio:</strong> {{ item.precio }} €
+        </p>
+        <div class="d-flex justify-content-between">
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'anadir_al_carrito' medicamento.id item.tienda.id %}">
+            {% bs_icon 'cart-plus' %} Añadir al carrito
+          </a>
         </div>
       </div>
-    {% endfor %}
+    </div>
   </div>
+  {% endfor %}
+</div>
 {% else %}
-  <div class="alert alert-warning">Este medicamento no está disponible en ninguna tienda actualmente.</div>
+<div class="alert alert-warning">Este medicamento no está disponible en ninguna tienda actualmente.</div>
 {% endif %}
 
 {% if request.user.rol == 'VENDEDOR' %}
-  <div class="text-end mt-5">
-    <a class="btn btn-outline-warning me-2" href="{% url 'edit_medicamento' medicamento.id %}">
-      {% bs_icon 'pencil' %} Editar
-    </a>
+<div class="text-end mt-5">
+  <a class="btn btn-outline-warning me-2" href="{% url 'edit_medicamento' medicamento.id %}">
+    {% bs_icon 'pencil' %} Editar
+  </a>
 
-    <form method="post" action="{% url 'delete_medicamento' medicamento.id %}" style="display:inline;">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-outline-danger"
-        onclick="return confirm('¿Estás seguro de que deseas eliminar este medicamento?');">
-        {% bs_icon 'trash' %} Eliminar
-      </button>
-    </form>
-  </div>
+  <form method="post" action="{% url 'delete_medicamento' medicamento.id %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-outline-danger"
+      onclick="return confirm('¿Estás seguro de que deseas eliminar este medicamento?');">
+      {% bs_icon 'trash' %} Eliminar
+    </button>
+  </form>
+</div>
 {% endif %}
 
 {% endblock %}
