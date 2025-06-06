@@ -81,6 +81,13 @@
                 </li>
                 {%endif%}
 
+
+                {%if perms.tienda.change_devolucion  %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'productos_pedidos_vendedor' %}">Historial Compras Cliente</a>
+                </li>
+                {%endif%}
+
                 {%if perms.tienda.change_devolucion  %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'devoluciones_pendientes' %}">Devoluciones Pendientes</a>

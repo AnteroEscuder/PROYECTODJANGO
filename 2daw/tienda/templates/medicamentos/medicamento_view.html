@@ -31,7 +31,7 @@
 <div class="alert alert-warning">Este medicamento no está disponible en ninguna tienda actualmente.</div>
 {% endif %}
 
-{% if request.user.rol == 'VENDEDOR' %}
+{% if request.user.rol == 3 %}
 <div class="text-end mt-5">
   <a class="btn btn-outline-warning me-2" href="{% url 'edit_medicamento' medicamento.id %}">
     {% bs_icon 'pencil' %} Editar

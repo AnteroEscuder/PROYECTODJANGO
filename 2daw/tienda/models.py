@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import Group
 from django.utils import timezone 
+from decimal import Decimal
 
 def crear_grupos(sender, **kwargs):
     if not Group.objects.filter(name="Clientes").exists():
@@ -93,6 +94,8 @@ class DatosVendedor(models.Model):
 class Pedido(models.Model):
     cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
     fecha = models.DateTimeField(null=True, blank=True)
+    total_pagado = models.DecimalField(max_digits=10,decimal_places=2,default=Decimal('0.00'))
+    cuenta_usada = models.ForeignKey('CuentaBancaria', null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f"Pedido {self.id} de {self.cliente.usuario.username}"

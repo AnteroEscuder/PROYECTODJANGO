@@ -573,8 +573,12 @@ def carrito_view(request):
 @permission_required('tienda.add_pedido')
 def finalizar_compra(request):
     cliente = get_object_or_404(Cliente, usuario=request.user)
-    cuenta = get_object_or_404(CuentaBancaria, cliente=cliente)
+    cuenta = CuentaBancaria.objects.filter(cliente=cliente).first()
     pedido = Pedido.objects.filter(cliente=cliente, fecha__isnull=True).first()
+
+    if not cuenta:
+        messages.warning(request, "Debes registrar una cuenta bancaria antes de finalizar la compra.")
+        return redirect('ver_cuenta_bancaria')
 
     if not pedido:
         messages.warning(request, "No tienes ningún pedido en curso.")
@@ -601,18 +605,22 @@ def finalizar_compra(request):
         pedido.fecha = timezone.now()
         pedido.save()
 
+        pedido.cuenta_usada = cuenta
+
         if cuenta.saldo > 0:
             if total <= cuenta.saldo:
                 cuenta.saldo -= Decimal(total)
-                total_pagado = Decimal('0.00')
+                pedido.total_pagado = Decimal('0.00')
             else:
-                total_pagado = Decimal(total) - cuenta.saldo
+                pedido.total_pagado = Decimal(total) - cuenta.saldo
                 cuenta.saldo = Decimal('0.00')
             cuenta.save()
         else:
-            total_pagado = Decimal(total)
+            pedido.total_pagado = Decimal(total)
+        
+        pedido.save()
 
-    messages.success(request, f"Compra finalizada. Has pagado {total_pagado} €.")
+    messages.success(request, f"Compra finalizada. Has pagado {pedido.total_pagado} €.")
     return redirect('inicio')
 
 @permission_required('tienda.add_pedido')
@@ -688,7 +696,7 @@ def eliminar_linea(request, linea_id):
     linea = get_object_or_404(LineaPedido, id=linea_id)
 
     try:
-        inventario = Inventario.objects.get(medicamento=linea.medicamento)
+        inventario = Inventario.objects.get(medicamento=linea.medicamento, tienda=linea.tienda)
     except Inventario.DoesNotExist:
         inventario = None
 
@@ -763,9 +771,9 @@ def importar_producto(request, producto_id):
     if tienda:
         Inventario.objects.create(
             tienda=tienda,
-            medicamento=medicamento,
+            medicamento=nuevo_medicamento,
             cantidad=10,
-            precio=medicamento.precio
+            precio=nuevo_medicamento.precio
         )
 
     messages.success(request, "Producto importado correctamente.")
@@ -776,11 +784,24 @@ def productos_pedidos_por_clientes(request):
     vendedor = get_object_or_404(Vendedor, usuario=request.user)
     medicamentos_vendedor = Medicamento.objects.filter(vendedor=vendedor)
 
-    lineas = LineaPedido.objects.filter(medicamento__in=medicamentos_vendedor).select_related('medicamento', 'pedido__cliente__usuario')
+    lineas = LineaPedido.objects.filter(
+        medicamento__in=medicamentos_vendedor
+    ).select_related(
+        'medicamento', 'pedido__cliente__usuario', 'tienda'
+    )
+
+    for linea in lineas:
+        linea.importe = linea.medicamento.precio * linea.cantidad
+        try:
+            cuenta = CuentaBancaria.objects.get(cliente=linea.pedido.cliente)
+            linea.cuenta_bancaria = cuenta
+        except CuentaBancaria.DoesNotExist:
+            linea.cuenta_bancaria = None
 
     return render(request, 'vendedores/productos_pedidos_por_clientes.html', {
         'lineas': lineas
     })
+
 
 @permission_required('tienda.view_pedido')
 def devoluciones_pendientes(request):
@@ -801,7 +822,7 @@ def aceptar_devolucion(request, devolucion_id):
     cuenta = get_object_or_404(CuentaBancaria, cliente=cliente)
 
     with transaction.atomic():
-        inventario = Inventario.objects.get(medicamento=linea.medicamento)
+        inventario = Inventario.objects.get(medicamento=linea.medicamento, tienda=linea.tienda)
         inventario.cantidad += devolucion.cantidad_devuelta
         inventario.save()
 

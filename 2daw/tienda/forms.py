@@ -163,6 +163,10 @@ class InventarioModelForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         precio = cleaned_data.get('precio')
+        cantidad = cleaned_data.get('cantidad')
+
+        if cantidad <= 0:
+            self.add_error('cantidad', 'La cantidad tiene que ser positivo')
 
         if precio <= 0:
             self.add_error('precio', 'El precio tiene que ser positivo')

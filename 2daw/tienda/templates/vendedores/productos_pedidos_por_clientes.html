@@ -1,29 +1,41 @@
 {% extends 'estructura/principal.html' %}
 {% block contenido %}
 <div class="container mt-5">
-    <h2>📦 Productos pedidos por tus clientes</h2>
+    <h2 class="mb-4">📦 Productos pedidos por tus clientes</h2>
 
     {% if lineas %}
-    <table class="table table-bordered mt-4">
-        <thead class="table-dark">
-            <tr>
-                <th>Cliente</th>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Fecha del pedido</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for linea in lineas %}
-            <tr>
-                <td>{{ linea.pedido.cliente.usuario.username }}</td>
-                <td>{{ linea.medicamento.nombre }}</td>
-                <td>{{ linea.cantidad }}</td>
-                <td>{{ linea.pedido.fecha|date:"d/m/Y H:i" }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>👤 Cliente</th>
+                    <th>💊 Producto</th>
+                    <th>🔢 Cantidad</th>
+                    <th>🕒 Fecha</th>
+                    <th>💶 Importe</th>
+                    <th>🏦 Cuenta Bancaria</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for linea in lineas %}
+                <tr class="text-center">
+                    <td>{{ linea.pedido.cliente.usuario.username }}</td>
+                    <td>{{ linea.medicamento.nombre }}</td>
+                    <td>{{ linea.cantidad }}</td>
+                    <td>{{ linea.pedido.fecha|date:"d/m/Y H:i" }}</td>
+                    <td class="text-end">{{ linea.importe|floatformat:2 }} €</td>
+                    <td class="text-center">
+                        {% if linea.cuenta_bancaria %}
+                            {{ linea.cuenta_bancaria.iban|slice:":-6" }}******
+                        {% else %}
+                            <span class="text-muted">No registrada</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% else %}
     <div class="alert alert-info mt-4">Aún no han pedido ningún producto tuyo.</div>
     {% endif %}
