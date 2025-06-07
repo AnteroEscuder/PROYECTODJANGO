@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "tienda",
     "api",
+    'rest_framework',
     "oauth2_provider",
     "debug_toolbar",
     "django_bootstrap5",

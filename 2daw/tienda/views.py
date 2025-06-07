@@ -33,12 +33,6 @@ def lista_vendedores(request):
     listado_vendedores = Vendedor.objects.all()
     return render(request, 'vendedores/lista_vendedores.html', {'vendedores_mostrar' : listado_vendedores})
 
-def is_cliente(user):
-    return user.rol == Usuario.CLIENTE
-
-def is_vendedor(user):
-    return user.rol == Usuario.VENDEDOR
-
 @permission_required('tienda.view_medicamento')
 def lista_medicamentos(request):
     buscar = request.GET.get('buscar', '')
