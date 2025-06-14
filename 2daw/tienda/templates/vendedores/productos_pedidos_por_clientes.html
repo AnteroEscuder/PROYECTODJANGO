@@ -3,7 +3,7 @@
 <div class="container mt-5">
     <h2 class="mb-4">📦 Productos pedidos por tus clientes</h2>
 
-    {% if lineas %}
+    {% if lineas_pedido %}
     <div class="table-responsive">
         <table class="table table-bordered table-hover align-middle">
             <thead class="table-dark text-center">
@@ -17,7 +17,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for linea in lineas %}
+                {% for linea in lineas_pedido %}
                 <tr class="text-center">
                     <td>{{ linea.pedido.cliente.usuario.username }}</td>
                     <td>{{ linea.medicamento.nombre }}</td>
@@ -25,10 +25,10 @@
                     <td>{{ linea.pedido.fecha|date:"d/m/Y H:i" }}</td>
                     <td class="text-end">{{ linea.importe|floatformat:2 }} €</td>
                     <td class="text-center">
-                        {% if linea.cuenta_bancaria %}
-                            {{ linea.cuenta_bancaria.iban|slice:":-6" }}******
+                        {% if linea.pedido.cuenta_usada %}
+                        {{ linea.pedido.cuenta_usada.iban|slice:":-6" }}******
                         {% else %}
-                            <span class="text-muted">No registrada</span>
+                        <span class="text-muted">No registrada</span>
                         {% endif %}
                     </td>
                 </tr>

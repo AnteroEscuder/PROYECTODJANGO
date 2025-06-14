@@ -1,0 +1,28 @@
+{% extends 'estructura/principal.html' %}
+{% block contenido %}
+<div class="container mt-5">
+    <h2 class="mb-4">⬇️ Importar producto de la API</h2>
+    <p><strong>Producto:</strong> {{ producto.nombre }} — {{ producto.precio }} €</p>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="tienda">Selecciona la tienda donde importarlo:</label>
+            <select class="form-select" name="tienda" required>
+                {% for tienda in tiendas %}
+                <option value="{{ tienda.id }}">{{ tienda.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="cantidad">Cantidad de unidades:</label>
+            <input type="number" name="cantidad" min="1" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Importar</button>
+        <a href="{% url 'productos_terceros' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

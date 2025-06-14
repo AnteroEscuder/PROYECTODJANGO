@@ -15,6 +15,7 @@ from django.conf import settings
 from django.db import transaction
 from decimal import Decimal
 from django.db import transaction
+from api.models import ProductoTercero
 
 # Create your views here.
 def index(request):
@@ -297,15 +298,8 @@ def ver_perfil(request):
 
 @permission_required('tienda.change_medicamento')
 def edit_medicamento(request, idMed):
-    try:
-        vendedor = Vendedor.objects.get(usuario=request.user)
-    except Vendedor.DoesNotExist:
-        raise Http404("Vendedor no encontrado")
-
-    try:
-        medicamento = get_object_or_404(Medicamento, id=idMed, vendedor=vendedor)
-    except Medicamento.DoesNotExist:
-        raise Http404("Medicamento no encontrados")
+    vendedor = get_object_or_404(usuario=request.user)
+    medicamento = get_object_or_404(Medicamento, id=idMed, vendedor=vendedor)
 
     if request.method == 'POST':
         form = MedicamentoModelForm(request.POST, instance=medicamento)
@@ -363,20 +357,11 @@ def edit_tienda(request, idTien):
 
 @permission_required('tienda.delete_tienda')
 def delete_tienda(request, idTien):
+    tienda = get_object_or_404(Tienda, id=idTien, vendedor__usuario=request.user)
 
-    try:
-        vendedor = Vendedor.objects.get(usuario=request.user)
-    except Vendedor.DoesNotExist:
-        raise Http404("Vendedor no encontrado")
-
-    try:
-        tienda = get_object_or_404(Tienda, id=idTien, vendedor=vendedor)
-    except Tienda.DoesNotExist:
-        raise Http404("Tienda no encontrada")
-
-    if request.method == 'POST':
+    if request.method == "POST":
         tienda.delete()
-        messages.success(request, 'Tienda eliminada correctamente.')
+        messages.success(request, "Tienda eliminada correctamente.")
         return redirect('lista_tiendas')
 
     return render(request, 'tiendas/tienda_confirm_delete.html', {'tienda': tienda})
@@ -737,65 +722,53 @@ def productos_terceros(request):
 
 @permission_required('tienda.add_medicamento')
 def importar_producto(request, producto_id):
-    vendedor = get_object_or_404(Vendedor, usuario=request.user)
-    
-    token = obtener_token_oauth()
-    headers = {'Authorization': f'Bearer {token}'}
-    
-    response = requests.get(f"{settings.API_URL}/api/productos/{producto_id}/", headers=headers)
-    if response.status_code != 200:
-        messages.error(request, "No se pudo obtener el producto.")
-        return redirect('productos_terceros')
+    vendedor = request.user.vendedor
+    producto = get_object_or_404(ProductoTercero, id=producto_id)
+    tiendas = Tienda.objects.filter(vendedor=vendedor)
 
-    producto_data = response.json()
+    if request.method == 'POST':
+        tienda_id = request.POST.get('tienda')
+        cantidad = int(request.POST.get('cantidad', 0))
 
-    if Medicamento.objects.filter(nombre=producto_data['nombre'], vendedor=vendedor).exists():
-        messages.warning(request, "Este producto ya ha sido importado.")
-        return redirect('productos_terceros')
+        if cantidad < 1:
+            messages.error(request, "La cantidad debe ser mayor que cero.")
+            return redirect(request.path)
 
-    nuevo_medicamento = Medicamento.objects.create(
-        nombre=producto_data.get('nombre', 'Sin nombre'),
-        descripcion=producto_data.get('descripcion', 'Sin descripción'),
-        precio=int(float(producto_data.get('precio', 0))),
-        fecha_caducidad=producto_data.get('fecha_caducidad', '2099-12-31'),
-        vendedor=vendedor
-    )
+        tienda = get_object_or_404(tiendas, id=tienda_id)
 
-    tienda = Tienda.objects.filter(vendedor=vendedor).first()
-    if tienda:
-        Inventario.objects.create(
-            tienda=tienda,
-            medicamento=nuevo_medicamento,
-            cantidad=10,
-            precio=nuevo_medicamento.precio
+        medicamento = Medicamento.objects.create(
+            nombre=producto.nombre,
+            precio=producto.precio,
+            descripcion="Importado de la API",
+            fecha_caducidad="2030-12-31",
+            vendedor=vendedor
         )
 
-    messages.success(request, "Producto importado correctamente.")
-    return redirect('productos_terceros')
+        Inventario.objects.create(
+            tienda=tienda,
+            medicamento=medicamento,
+            cantidad=cantidad,
+            precio = medicamento.precio
+        )
 
-@permission_required('tienda.view_pedido')
-def productos_pedidos_por_clientes(request):
-    vendedor = get_object_or_404(Vendedor, usuario=request.user)
-    medicamentos_vendedor = Medicamento.objects.filter(vendedor=vendedor)
+        messages.success(request, f"Producto '{producto.nombre}' importado correctamente a la tienda '{tienda.nombre}' con {cantidad} unidades.")
+        return redirect('lista_medicamentos')
 
-    lineas = LineaPedido.objects.filter(
-        medicamento__in=medicamentos_vendedor
-    ).select_related(
-        'medicamento', 'pedido__cliente__usuario', 'tienda'
-    )
-
-    for linea in lineas:
-        linea.importe = linea.medicamento.precio * linea.cantidad
-        try:
-            cuenta = CuentaBancaria.objects.get(cliente=linea.pedido.cliente)
-            linea.cuenta_bancaria = cuenta
-        except CuentaBancaria.DoesNotExist:
-            linea.cuenta_bancaria = None
-
-    return render(request, 'vendedores/productos_pedidos_por_clientes.html', {
-        'lineas': lineas
+    return render(request, 'importar_producto.html', {
+        'producto': producto,
+        'tiendas': tiendas
     })
 
+@permission_required('tienda.view_lineapedido')
+def productos_pedidos_por_clientes(request):
+    vendedor = get_object_or_404(Vendedor, usuario=request.user)
+    medicamentos = Medicamento.objects.filter(vendedor=vendedor)
+
+    lineas = LineaPedido.objects.filter(medicamento__in=medicamentos).select_related('medicamento', 'pedido__cliente')
+
+    return render(request, 'vendedores/productos_pedidos_por_clientes.html', {
+        'lineas_pedido': lineas,
+    })
 
 @permission_required('tienda.view_pedido')
 def devoluciones_pendientes(request):
@@ -835,23 +808,19 @@ def aceptar_devolucion(request, devolucion_id):
 def solicitar_devolucion_producto(request, linea_id):
     linea = get_object_or_404(LineaPedido, id=linea_id, pedido__cliente__usuario=request.user)
 
-    if request.method == 'POST':
-        cantidad = int(request.POST.get('cantidad'))
+    if Devolucion.objects.filter(linea_pedido=linea).exists():
+        messages.warning(request, "Ya has solicitado la devolución de este producto.")
+        return redirect('historial')
 
-        if cantidad > linea.cantidad or cantidad <= 0:
-            messages.error(request, "Cantidad no válida.")
-        else:
-            Devolucion.objects.create(
-                linea_pedido=linea,
-                cantidad_devuelta=cantidad,
-                aceptado=False
-            )
-            messages.success(request, "Solicitud de devolución enviada.")
-            return redirect('historial')
+    Devolucion.objects.create(
+        linea_pedido=linea,
+        cantidad_devuelta=linea.cantidad,
+        aceptado=False
+    )
 
-    return render(request, 'carrito/solicitar_devolucion_producto.html', {
-        'linea': linea
-    })
+    messages.success(request, "Solicitud de devolución enviada.")
+    return redirect('historial')
+
 
 @permission_required('tienda.add_pedido')
 def confirmar_compra(request):

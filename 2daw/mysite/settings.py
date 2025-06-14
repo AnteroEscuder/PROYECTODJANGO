@@ -140,3 +140,5 @@ API_USERNAME = 'root'
 API_PASSWORD = '1234'
 API_CLIENT_ID = 'f7ZIMPy0Wa4RVqMNbK66xcstp3J1l6OzvqhArtby'
 API_CLIENT_SECRET = 'tienda123'
+API_TOKEN_URL = f"{API_URL}/oauth/token/"
+API_PRODUCTOS_URL = f"{API_URL}/api/productos/"

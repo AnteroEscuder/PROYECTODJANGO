@@ -116,9 +116,14 @@ class LineaPedido(models.Model):
     medicamento = models.ForeignKey('Medicamento', on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1)
     tienda = models.ForeignKey(Tienda, on_delete=models.CASCADE, null=True, blank=True)
+    devuelto = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.cantidad} x {self.medicamento.nombre}"
+
+    @property
+    def importe(self):
+        return self.cantidad * self.medicamento.precio
 
 class Devolucion(models.Model):
     linea_pedido = models.ForeignKey('LineaPedido', on_delete=models.CASCADE)

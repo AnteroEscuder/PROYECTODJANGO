@@ -1,0 +1,35 @@
+{% extends 'estructura/principal.html' %}
+{% block contenido %}
+<div class="container mt-5">
+    <h2 class="mb-4">🛰️ Productos disponibles en la API externa</h2>
+
+    {% if productos %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>🆔 ID</th>
+                    <th>💊 Nombre</th>
+                    <th>🏪 Tienda</th>
+                    <th>💶 Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr class="text-center">
+                    <td>{{ producto.id }}</td>
+                    <td>{{ producto.nombre }}</td>
+                    <td>{{ producto.tienda }}</td>
+                    <td>{{ producto.precio }} €</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-warning mt-4">
+        No se pudieron cargar los productos desde la API externa.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
