@@ -100,6 +100,12 @@
                 </li>
                 {%endif%}
 
+                {%if perms.tienda.change_pedido  %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'clientes_con_pedidos' %}">Clientes con pedidos</a>
+                </li>
+                {%endif%}
+
                 {%if request.user.is_authenticated %}
                 <li class="nav-item">
                     <a href="{% url 'ver_perfil' %}" class="nav-link">Ver Perfil</a>

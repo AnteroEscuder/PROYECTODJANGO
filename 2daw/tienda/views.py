@@ -6,13 +6,11 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required, user_passes_test
-from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden, Http404
 from django.utils.timezone import now
 import requests
 from django.conf import settings
-from django.db import transaction
 from decimal import Decimal
 from django.db import transaction
 from api.models import ProductoTercero
@@ -37,10 +35,22 @@ def lista_vendedores(request):
 @permission_required('tienda.view_medicamento')
 def lista_medicamentos(request):
     buscar = request.GET.get('buscar', '')
+    precio = request.GET.get('precio', '')
     medicamentos = Medicamento.objects.all()
 
     if buscar:
         medicamentos = medicamentos.filter(nombre__icontains=buscar)
+
+    if precio:
+        try:
+            precio_valor = float(precio)
+            if precio_valor <= 0:
+                messages.warning(request, "Introduce un precio positivo.")
+            else:
+                medicamentos = medicamentos.filter(precio__lte=precio)
+        except ValueError:
+            messages.warning(request, "Introduce un precio válido.")
+
 
     return render(request, 'medicamentos/lista_medicamentos.html', {
         'medicamentos_mostrar': medicamentos,
@@ -91,10 +101,7 @@ def login_view(request):
 
 @permission_required('tienda.add_medicamento')
 def create_medicamento(request):
-    try:
-        vendedor = Vendedor.objects.get(usuario=request.user)
-    except Vendedor.DoesNotExist:
-        raise Http404("Vendedor no encontrado")
+    vendedor = request.user.vendedor
 
     if request.method == 'POST':
         form = MedicamentoModelForm(request.POST)
@@ -116,10 +123,7 @@ def lista_tiendas(request):
 
 @permission_required('tienda.add_tienda')
 def create_tienda(request):
-    try:
-        vendedor = Vendedor.objects.get(usuario=request.user)
-    except Vendedor.DoesNotExist:
-        raise Http404("Vendedor no encontrado")
+    vendedor = request.user.vendedor
 
     if request.method == 'POST':
         formulario = TiendaModelForm(request.POST)
@@ -152,10 +156,7 @@ def get_medicamento(request, idMed):
 
 @permission_required('tienda.add_cuentabancaria')
 def ver_o_crear_cuenta_bancaria(request):
-    try:
-        cliente = Cliente.objects.get(usuario=request.user)
-    except Cliente.DoesNotExist:
-        raise Http404("Cliente no encontrado")
+    cliente = request.user.cliente
 
     try:
         cuenta = CuentaBancaria.objects.get(cliente=cliente)
@@ -175,10 +176,7 @@ def ver_o_crear_cuenta_bancaria(request):
 
 @permission_required('tienda.change_cuentabancaria')
 def editar_cuenta_bancaria(request):
-    try:
-        cliente = Cliente.objects.get(usuario=request.user)
-    except Cliente.DoesNotExist:
-        raise Http404("Cliente no encontrado")
+    cliente = request.user.cliente
 
     try:
         cuenta = CuentaBancaria.objects.get(cliente=cliente)
@@ -196,10 +194,7 @@ def editar_cuenta_bancaria(request):
 
 @permission_required('tienda.delete_cuentabancaria')
 def eliminar_cuenta_bancaria(request):
-    try:
-        cliente = Cliente.objects.get(usuario=request.user)
-    except Cliente.DoesNotExist:
-        raise Http404("Cliente no encontrado")
+    cliente = request.user.cliente
 
     try:
         cuenta = CuentaBancaria.objects.get(cliente=cliente)
@@ -215,7 +210,7 @@ def eliminar_cuenta_bancaria(request):
 @permission_required('tienda.view_datosvendedor')
 def ver_datos_vendedor(request):
     try:
-        vendedor = Vendedor.objects.get(usuario=request.user)
+        vendedor = request.user.vendedor
         datos = DatosVendedor.objects.get(vendedor=vendedor)
         return render(request, 'datos_vendedor/ver.html', {'datos': datos})
     except (Vendedor.DoesNotExist, DatosVendedor.DoesNotExist):
@@ -223,10 +218,7 @@ def ver_datos_vendedor(request):
 
 @permission_required('tienda.add_datosvendedor')
 def crear_datos_vendedor(request):
-    try:
-        vendedor = Vendedor.objects.get(usuario=request.user)
-    except Vendedor.DoesNotExist:
-        raise Http404("Vendedor no encontrado")
+    vendedor = request.user.vendedor
 
     if DatosVendedor.objects.filter(vendedor=vendedor).exists():
         return redirect('ver_datos_vendedor')
@@ -246,10 +238,7 @@ def crear_datos_vendedor(request):
 
 @permission_required('tienda.change_datosvendedor')
 def editar_datos_vendedor(request):
-    try:
-        vendedor = Vendedor.objects.get(usuario=request.user)
-    except Vendedor.DoesNotExist:
-        raise Http404("Vendedor no encontrado")
+    vendedor = request.user.vendedor
 
     try:
         datos = DatosVendedor.objects.get(vendedor=vendedor)
@@ -269,10 +258,7 @@ def editar_datos_vendedor(request):
 
 @permission_required('tienda.delete_datosvendedor')
 def eliminar_datos_vendedor(request):
-    try:
-        vendedor = Vendedor.objects.get(usuario=request.user)
-    except Vendedor.DoesNotExist:
-        raise Http404("Vendedor no encontrado")
+    vendedor = request.user.vendedor
 
     try:
         datos = DatosVendedor.objects.get(vendedor=vendedor)
@@ -298,7 +284,7 @@ def ver_perfil(request):
 
 @permission_required('tienda.change_medicamento')
 def edit_medicamento(request, idMed):
-    vendedor = get_object_or_404(usuario=request.user)
+    vendedor = request.user.vendedor
     medicamento = get_object_or_404(Medicamento, id=idMed, vendedor=vendedor)
 
     if request.method == 'POST':
@@ -314,15 +300,8 @@ def edit_medicamento(request, idMed):
 
 @permission_required('tienda.delete_medicamento')
 def delete_medicamento(request, idMed):
-    try:
-        vendedor = Vendedor.objects.get(usuario=request.user)
-    except Vendedor.DoesNotExist:
-        raise Http404("Vendedor no encontrado")
-
-    try:
-        medicamento = get_object_or_404(Medicamento, id=idMed, vendedor=vendedor)
-    except Medicamento.DoesNotExist:
-        raise Http404("Medicamento no encontrados")
+    vendedor = request.user.vendedor
+    medicamento = get_object_or_404(Medicamento, id=idMed, vendedor=vendedor)
 
     if request.method == 'POST':
         medicamento.delete()
@@ -333,16 +312,8 @@ def delete_medicamento(request, idMed):
 
 @permission_required('tienda.change_tienda')
 def edit_tienda(request, idTien):
-
-    try:
-        vendedor = Vendedor.objects.get(usuario=request.user)
-    except Vendedor.DoesNotExist:
-        raise Http404("Vendedor no encontrado")
-
-    try:
-        tienda = get_object_or_404(Tienda, id=idTien, vendedor=vendedor)
-    except Tienda.DoesNotExist:
-        raise Http404("Tienda no encontrada")
+    vendedor = request.user.vendedor
+    tienda = get_object_or_404(Tienda, id=idTien, vendedor=vendedor)
 
     if request.method == 'POST':
         formulario = TiendaModelForm(request.POST, instance=tienda)
@@ -391,16 +362,27 @@ def crear_inventario(request):
 def listar_medicamentos_tienda(request, id_tienda):
     tienda = get_object_or_404(Tienda, id=id_tienda)
     buscar = request.GET.get("buscar", "")
+    precio = request.GET.get("precio", "")
+
     inventario = Inventario.objects.filter(tienda=tienda)
 
     if buscar:
         inventario = inventario.filter(medicamento__nombre__icontains=buscar)
 
+    if precio:
+        try:
+            precio_valor = float(precio)
+            inventario = inventario.filter(precio__lte=precio_valor)
+        except ValueError:
+            messages.warning(request, "Introduce un precio válido.")
+
     return render(request, 'inventario/listar_inventario.html', {
         'tienda': tienda,
         'inventario': inventario,
-        'buscar': buscar
+        'buscar': buscar,
+        'precio': precio
     })
+
 
 @permission_required('tienda.change_inventario')
 def editar_inventario(request, id):
@@ -430,7 +412,7 @@ def eliminar_inventario(request, id):
 
 @permission_required('tienda.add_pedido')
 def crear_pedido(request):
-    cliente = get_object_or_404(Cliente, usuario=request.user)
+    cliente = request.user.cliente
 
     if request.method == 'POST':
         form = PedidoForm(request.POST)
@@ -463,7 +445,7 @@ def comprar_medicamento(request, medicamento_id):
                 inventario.cantidad -= cantidad
                 inventario.save()
 
-                cliente = Cliente.objects.get(usuario=request.user)
+                cliente = request.user.cliente
              
                 Compra.objects.create(
                     cliente=cliente,
@@ -498,7 +480,7 @@ def comprar_medicamento(request, medicamento_id):
 
 @permission_required('tienda.add_pedido')
 def anadir_al_carrito(request, medicamento_id, tienda_id):
-    cliente = get_object_or_404(Cliente, usuario=request.user)
+    cliente = request.user.cliente
     medicamento = get_object_or_404(Medicamento, pk=medicamento_id)
     tienda = get_object_or_404(Tienda, pk=tienda_id)
     inventario = get_object_or_404(Inventario, medicamento=medicamento, tienda=tienda)
@@ -535,7 +517,7 @@ def anadir_al_carrito(request, medicamento_id, tienda_id):
 
 @permission_required('tienda.view_pedido')
 def carrito_view(request):
-    cliente = get_object_or_404(Cliente, usuario=request.user)
+    cliente = request.user.cliente
     pedido = Pedido.objects.filter(cliente=cliente, fecha__isnull=True).first()
     lineas = pedido.lineas.all() if pedido else []
     
@@ -551,7 +533,7 @@ def carrito_view(request):
 
 @permission_required('tienda.add_pedido')
 def finalizar_compra(request):
-    cliente = get_object_or_404(Cliente, usuario=request.user)
+    cliente = request.user.cliente
     cuenta = CuentaBancaria.objects.filter(cliente=cliente).first()
     pedido = Pedido.objects.filter(cliente=cliente, fecha__isnull=True).first()
 
@@ -609,7 +591,7 @@ def finalizar_compra(request):
 
 @permission_required('tienda.add_pedido')
 def resumen_compra(request, pedido_id):
-    cliente = get_object_or_404(Cliente, usuario=request.user)
+    cliente = request.user.cliente
     pedido = get_object_or_404(Pedido, id=pedido_id, cliente=cliente)
 
     return render(request, 'carrito/resumen_compra.html', {
@@ -619,6 +601,10 @@ def resumen_compra(request, pedido_id):
 @permission_required('tienda.change_pedido')
 def devolver_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id, cliente__usuario=request.user)
+
+    if pedido.estado == 'cancelado':
+        messages.error(request, "No puedes devolver un pedido que ha sido cancelado.")
+        return redirect('historial')
 
     for linea in pedido.lineas.all():
         if not Devolucion.objects.filter(linea_pedido=linea).exists():
@@ -631,9 +617,10 @@ def devolver_pedido(request, pedido_id):
     messages.success(request, "Solicitud de devolución enviada. Pendiente de aprobación por el vendedor.")
     return redirect('historial')
 
+
 @permission_required('tienda.add_pedido')
 def historial_pedidos(request):
-    cliente = get_object_or_404(Cliente, usuario=request.user)
+    cliente = request.user.cliente
     pedidos = Pedido.objects.filter(cliente=cliente, fecha__isnull=False)
 
     for pedido in pedidos:
@@ -707,7 +694,7 @@ def obtener_token_oauth():
 
 @permission_required('api.add_productotercero')
 def productos_terceros(request):
-    vendedor = get_object_or_404(Vendedor, usuario=request.user)
+    vendedor = request.user.vendedor
     medicamentos_importados = Medicamento.objects.filter(vendedor=vendedor).values_list('nombre', flat=True)
 
     token = obtener_token_oauth()
@@ -766,7 +753,7 @@ def importar_producto(request, producto_id):
 
 @permission_required('tienda.view_lineapedido')
 def productos_pedidos_por_clientes(request):
-    vendedor = get_object_or_404(Vendedor, usuario=request.user)
+    vendedor = request.user.vendedor
     medicamentos = Medicamento.objects.filter(vendedor=vendedor)
 
     lineas = LineaPedido.objects.filter(medicamento__in=medicamentos).select_related('medicamento', 'pedido__cliente')
@@ -777,7 +764,7 @@ def productos_pedidos_por_clientes(request):
 
 @permission_required('tienda.view_pedido')
 def devoluciones_pendientes(request):
-    vendedor = get_object_or_404(Vendedor, usuario=request.user)
+    vendedor = request.user.vendedor
     devoluciones = Devolucion.objects.filter(
         linea_pedido__medicamento__vendedor=vendedor,
         aceptado=False
@@ -813,6 +800,10 @@ def aceptar_devolucion(request, devolucion_id):
 def solicitar_devolucion_producto(request, linea_id):
     linea = get_object_or_404(LineaPedido, id=linea_id, pedido__cliente__usuario=request.user)
 
+    if linea.pedido.estado == 'cancelado':
+        messages.error(request, "No puedes devolver un producto de un pedido cancelado.")
+        return redirect('historial')
+
     if Devolucion.objects.filter(linea_pedido=linea).exists():
         messages.warning(request, "Ya has solicitado la devolución de este producto.")
         return redirect('historial')
@@ -825,6 +816,49 @@ def solicitar_devolucion_producto(request, linea_id):
 
     messages.success(request, "Solicitud de devolución enviada.")
     return redirect('historial')
+
+
+@permission_required('tienda.view_pedido')
+def pedidos_de_cliente(request, cliente_id):
+    vendedor = request.user.vendedor
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+
+    pedidos = Pedido.objects.filter(
+        lineas__medicamento__vendedor=vendedor,
+        cliente=cliente
+    ).distinct()
+
+    return render(request, 'pedidos/pedidos_cliente.html', {
+        'cliente': cliente,
+        'pedidos': pedidos
+    })
+
+@permission_required('tienda.change_pedido')
+def clientes_con_pedidos(request):
+    vendedor = request.user.vendedor
+
+    clientes = Cliente.objects.filter(
+        pedido__lineas__medicamento__vendedor=vendedor
+    ).distinct()
+
+    return render(request, 'pedidos/clientes_vendedor.html', {
+        'clientes': clientes
+    })
+
+@permission_required('tienda.change_pedido')
+def cancelar_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    vendedor = request.user.vendedor
+
+    tiene_productos = pedido.lineas.filter(medicamento__vendedor=vendedor).exists()
+    if not tiene_productos:
+        messages.error(request, "No puedes cancelar este pedido porque no contiene tus productos.")
+        return redirect('inicio')
+
+    pedido.estado = 'cancelado'
+    pedido.save()
+    messages.success(request, f"Pedido {pedido.id} cancelado correctamente.")
+    return redirect('inicio')
 
 
 @permission_required('tienda.add_pedido')

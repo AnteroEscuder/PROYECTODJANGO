@@ -1,0 +1,20 @@
+{% extends 'estructura/principal.html' %}
+{% block contenido %}
+<div class="container mt-5">
+    <h2>Clientes con pedidos de tus productos</h2>
+    {% if clientes %}
+        <ul class="list-group">
+        {% for cliente in clientes %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ cliente.usuario.username }}
+                <a href="{% url 'pedidos_de_cliente' cliente.id %}" class="btn btn-primary btn-sm">
+                    Ver pedidos
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay clientes con pedidos de tus productos.</p>
+    {% endif %}
+</div>
+{% endblock %}
