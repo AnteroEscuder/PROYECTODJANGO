@@ -1,0 +1,14 @@
+{% extends 'estructura/principal.html' %}
+{% block contenido %}
+<div class="container mt-4">
+    <h2>Finalizar compra</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="direccion" class="form-label">Dirección de envío:</label>
+            <input type="text" name="direccion" id="direccion" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success">Confirmar compra</button>
+    </form>
+</div>
+{% endblock %}

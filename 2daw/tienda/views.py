@@ -563,44 +563,49 @@ def finalizar_compra(request):
         messages.warning(request, "No tienes ningún pedido en curso.")
         return redirect('carrito')
 
-    lineas = pedido.lineas.all()
-    total = sum(linea.medicamento.precio * linea.cantidad for linea in lineas)
+    if request.method == 'POST':
+        direccion = request.POST.get('direccion')
 
-    with transaction.atomic():
-        for linea in lineas:
-            try:
+        if not direccion:
+            messages.error(request, "Debes indicar una dirección de envío.")
+            return redirect('finalizar_compra')
+
+        lineas = pedido.lineas.all()
+        total = sum(linea.medicamento.precio * linea.cantidad for linea in lineas)
+
+        with transaction.atomic():
+            for linea in lineas:
                 inventario = Inventario.objects.filter(medicamento=linea.medicamento, tienda=linea.tienda).first()
-            except Inventario.DoesNotExist:
-                messages.error(request, f"No hay inventario del medicamento {linea.medicamento}.")
-                return redirect('carrito')
+                if not inventario or inventario.cantidad < linea.cantidad:
+                    messages.error(request, f"Stock insuficiente para {linea.medicamento.nombre}.")
+                    return redirect('carrito')
 
-            if inventario.cantidad < linea.cantidad:
-                messages.error(request, f"Stock insuficiente para {linea.medicamento.nombre}.")
-                return redirect('carrito')
+                inventario.cantidad -= linea.cantidad
+                inventario.save()
 
-            inventario.cantidad -= linea.cantidad
-            inventario.save()
+            pedido.fecha = timezone.now()
+            pedido.direccion_envio = direccion
+            pedido.estado = 'pendiente'
+            pedido.cuenta_usada = cuenta
 
-        pedido.fecha = timezone.now()
-        pedido.save()
-
-        pedido.cuenta_usada = cuenta
-
-        if cuenta.saldo > 0:
-            if total <= cuenta.saldo:
-                cuenta.saldo -= Decimal(total)
-                pedido.total_pagado = Decimal('0.00')
+            if cuenta.saldo > 0:
+                if total <= cuenta.saldo:
+                    cuenta.saldo -= Decimal(total)
+                    pedido.total_pagado = Decimal('0.00')
+                else:
+                    pedido.total_pagado = Decimal(total) - cuenta.saldo
+                    cuenta.saldo = Decimal('0.00')
+                cuenta.save()
             else:
-                pedido.total_pagado = Decimal(total) - cuenta.saldo
-                cuenta.saldo = Decimal('0.00')
-            cuenta.save()
-        else:
-            pedido.total_pagado = Decimal(total)
-        
-        pedido.save()
+                pedido.total_pagado = Decimal(total)
+            
+            pedido.save()
 
-    messages.success(request, f"Compra finalizada. Has pagado {pedido.total_pagado} €.")
-    return redirect('inicio')
+        messages.success(request, f"Compra finalizada. Has pagado {pedido.total_pagado} €.")
+        return redirect('inicio')
+
+    return render(request, 'carrito/finalizar_compra.html', {'pedido': pedido})
+
 
 @permission_required('tienda.add_pedido')
 def resumen_compra(request, pedido_id):

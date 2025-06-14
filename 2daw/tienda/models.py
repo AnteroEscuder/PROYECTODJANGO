@@ -90,12 +90,23 @@ class DatosVendedor(models.Model):
 
     def __str__(self):
         return f"Datos de {self.vendedor.usuario.username}"
+    
+ESTADOS_PEDIDO = [
+    ('pendiente', 'Pendiente'),
+    ('enviado', 'Enviado'),
+    ('entregado', 'Entregado'),
+    ('cancelado', 'Cancelado'),
+]
 
 class Pedido(models.Model):
     cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
     fecha = models.DateTimeField(null=True, blank=True)
     total_pagado = models.DecimalField(max_digits=10,decimal_places=2,default=Decimal('0.00'))
     cuenta_usada = models.ForeignKey('CuentaBancaria', null=True, blank=True, on_delete=models.SET_NULL)
+
+    direccion_envio = models.CharField(max_length=255, blank=True)
+    estado = models.CharField(max_length=20, choices=ESTADOS_PEDIDO, default='pendiente')
+
 
     def __str__(self):
         return f"Pedido {self.id} de {self.cliente.usuario.username}"
