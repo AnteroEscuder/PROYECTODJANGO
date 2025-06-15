@@ -1,0 +1,15 @@
+{% extends 'estructura/principal.html' %}
+
+{% block contenido %}
+<div class="container mt-5">
+    {% if medicamento %}
+        <h2>{{ medicamento.nombre }}</h2>
+        <p><strong>Descripción:</strong> {{ medicamento.descripcion }}</p>
+        <p><strong>Precio:</strong> {{ medicamento.precio }} €</p>
+    {% else %}
+        <div class="alert alert-danger">
+            No se pudo obtener la información del medicamento.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

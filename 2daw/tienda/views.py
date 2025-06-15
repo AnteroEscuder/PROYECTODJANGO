@@ -14,6 +14,7 @@ from django.conf import settings
 from decimal import Decimal
 from django.db import transaction
 from api.models import ProductoTercero
+import json
 
 # Create your views here.
 def index(request):
@@ -598,7 +599,7 @@ def resumen_compra(request, pedido_id):
         'pedido': pedido
     })
 
-@permission_required('tienda.change_pedido')
+@permission_required('tienda.view_pedido')
 def devolver_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id, cliente__usuario=request.user)
 
@@ -662,8 +663,27 @@ def editar_linea(request, linea_id):
         'stock_disponible': stock_disponible
     })
 
+# TODO Comprobar que se borra sin añadir stock
 @permission_required('tienda.delete_lineapedido')
 def eliminar_linea(request, linea_id):
+    linea = get_object_or_404(LineaPedido, id=linea_id)
+
+    try:
+        inventario = Inventario.objects.get(medicamento=linea.medicamento, tienda=linea.tienda)
+    except Inventario.DoesNotExist:
+        inventario = None
+
+    with transaction.atomic():
+        if inventario:
+            inventario.save()
+
+        linea.delete()
+
+    messages.success(request, 'Producto eliminado del carrito.')
+    return redirect('carrito')
+
+@permission_required('tienda.delete_lineapedido')
+def eliminar_linea_cancelar_pedido(request, linea_id):
     linea = get_object_or_404(LineaPedido, id=linea_id)
 
     try:
@@ -677,9 +697,6 @@ def eliminar_linea(request, linea_id):
             inventario.save()
 
         linea.delete()
-
-    messages.success(request, 'Producto eliminado del carrito.')
-    return redirect('carrito')
 
 
 def obtener_token_oauth():
@@ -711,6 +728,151 @@ def productos_terceros(request):
         "productos": productos,
         "importados": nombres_importados
     })
+
+@permission_required('api.view_productotercero')
+def mostrar_medicamentos_api(request):
+    search = request.GET.get('q', '')
+
+    headers = {
+        'Authorization': 'Bearer 2xGYgEL7tWWtBajWwMfFZiVNpiSzgF',
+        'Content-Type': 'application/json'
+    }
+
+    try:
+        url = 'http://127.0.0.1:8000/api/productos/'
+        if search:
+            url += f'?nombre={search}'
+
+        response = requests.get(url, headers=headers)
+        medicamentos = response.json() if response.status_code == 200 else []
+    except Exception as e:
+        print(f"Error al consultar la API: {e}")
+        medicamentos = []
+
+    return render(request, 'api/productos_api.html', {
+        'productos': medicamentos
+    })
+
+
+@permission_required('api.view_productotercero')
+def ver_medicamento_api(request, medicamento_id):
+    url = f"http://127.0.0.1:8000/api/productos/{medicamento_id}/"
+    headers = {
+        "Authorization": "Bearer 2xGYgEL7tWWtBajWwMfFZiVNpiSzgF",
+        "Content-Type": "application/json"
+    }
+
+    try:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            medicamento = response.json()
+            return render(request, "api/detalle_medicamento.html", {
+                "medicamento": medicamento
+            })
+        else:
+            messages.error(request, f"Error al obtener el medicamento (código {response.status_code}).")
+    except requests.exceptions.RequestException as e:
+        messages.error(request, f"Error de conexión: {e}")
+    
+    return render(request, "api/detalle_medicamento.html", {
+        "medicamento": None
+    })
+
+@permission_required('api.change_productotercero')
+def editar_producto_tercero(request, producto_id):
+    url = f"http://127.0.0.1:8000/api/productos/"
+    headers = {
+        "Authorization": "Bearer 2xGYgEL7tWWtBajWwMfFZiVNpiSzgF",
+        "Content-Type": "application/json"
+    }
+
+    if request.method == "GET":
+        response = requests.get(f"{url}{producto_id}/", headers=headers)
+        if response.status_code == 200:
+            datos = response.json()
+            form = CrearProductoTerceroForm(initial=datos)
+        else:
+            messages.error(request, "No se pudo cargar el producto.")
+            return redirect("vista_principal_api")
+    else:
+        form = CrearProductoTerceroForm(request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+            datos["id"] = producto_id
+            datos["precio"] = float(datos["precio"])
+            datos["fecha_caducidad"] = datos["fecha_caducidad"].isoformat()
+
+            response = requests.put(url, headers=headers, data=json.dumps(datos))
+
+            if response.status_code == 200:
+                messages.success(request, "Producto actualizado correctamente.")
+                return redirect("mostrar_medicamentos_api")
+            else:
+                messages.error(request, f"Error al actualizar: {response.text}")
+
+    return render(request, "api/editar_productoTercero.html", {
+        "formulario": form,
+        "producto_id": producto_id
+    })
+
+@permission_required('api.add_productotercero')
+def crear_producto_tercero(request):
+    if request.method == "POST":
+        form = CrearProductoTerceroForm(request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+            datos['vendedor'] = request.user.id
+            datos["precio"] = float(datos["precio"])
+            datos["fecha_caducidad"] = datos["fecha_caducidad"].isoformat()
+
+            headers = {
+                'Authorization': 'Bearer 2xGYgEL7tWWtBajWwMfFZiVNpiSzgF',
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.post(
+                'http://127.0.0.1:8000/api/productos/',
+                headers=headers,
+                data=json.dumps(datos)
+            )
+            if response.status_code == 201:
+                messages.success(request, "Producto creado correctamente.")
+                return redirect('mostrar_medicamentos_api')
+            else:
+                try:
+                    errores_api = response.json()
+                    for campo, errores in errores_api.items():
+                        form.add_error(campo, errores)
+                except:
+                    messages.error(request, "Error desconocido al crear el producto.")
+    else:
+        form = CrearProductoTerceroForm()
+
+    return render(request, 'api/crear_productoTercero.html', {'formulario': form})
+
+@permission_required('api.delete_productotercero')
+def borrar_producto_tercero(request, producto_id):
+    url = 'http://127.0.0.1:8000/api/productos/'
+    headers = {
+        'Authorization': 'Bearer 2xGYgEL7tWWtBajWwMfFZiVNpiSzgF',
+        'Content-Type': 'application/json'
+    }
+    data = {
+        "id": producto_id
+    }
+
+    try:
+        response = requests.delete(url, headers=headers, data=json.dumps(data))
+        if response.status_code == 200:
+            messages.success(request, "Producto eliminado correctamente.")
+        elif response.status_code == 404:
+            messages.error(request, "Producto no encontrado.")
+        else:
+            messages.error(request, f"Error al eliminar: código {response.status_code}")
+    except requests.exceptions.RequestException as e:
+        messages.error(request, f"Error de conexión: {e}")
+
+    return redirect('mostrar_medicamentos_api')
 
 @permission_required('tienda.add_medicamento')
 def importar_producto(request, producto_id):
@@ -773,7 +935,7 @@ def devoluciones_pendientes(request):
         'devoluciones': devoluciones
     })
 
-@permission_required('tienda.view_pedido')
+@permission_required('tienda.change_pedido')
 def aceptar_devolucion(request, devolucion_id):
     devolucion = get_object_or_404(Devolucion, id=devolucion_id, aceptado=False)
     linea = devolucion.linea_pedido
@@ -817,7 +979,6 @@ def solicitar_devolucion_producto(request, linea_id):
     messages.success(request, "Solicitud de devolución enviada.")
     return redirect('historial')
 
-
 @permission_required('tienda.view_pedido')
 def pedidos_de_cliente(request, cliente_id):
     vendedor = request.user.vendedor
@@ -855,11 +1016,28 @@ def cancelar_pedido(request, pedido_id):
         messages.error(request, "No puedes cancelar este pedido porque no contiene tus productos.")
         return redirect('inicio')
 
+    with transaction.atomic():
+        for linea in pedido.lineas.filter(medicamento__vendedor = vendedor):
+            eliminar_linea_cancelar_pedido(request, linea.id)
+
     pedido.estado = 'cancelado'
     pedido.save()
     messages.success(request, f"Pedido {pedido.id} cancelado correctamente.")
     return redirect('inicio')
 
+@permission_required('tienda.change_devolucion')
+def denegar_devolucion(request, devolucion_id):
+    devolucion = get_object_or_404(Devolucion, id=devolucion_id)
+
+    if devolucion.aceptado or devolucion.denegada:
+        messages.warning(request, "Esta solicitud ya ha sido gestionada.")
+    else:
+        devolucion.denegada = True
+        devolucion.fecha_aceptacion = timezone.now()
+        devolucion.save()
+        messages.success(request, "La solicitud de devolución ha sido denegada correctamente.")
+
+    return redirect('devoluciones_pendientes')
 
 @permission_required('tienda.add_pedido')
 def confirmar_compra(request):

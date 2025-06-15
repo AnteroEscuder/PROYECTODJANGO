@@ -217,3 +217,57 @@ class CompraForm(forms.Form):
 
 class AñadirAlCarritoForm(forms.Form):
     cantidad = forms.IntegerField(min_value=1, label="Unidades")
+
+
+    from django import forms
+
+class CrearProductoTerceroForm(forms.Form):
+    nombre = forms.CharField(
+        max_length=100,
+        label='Nombre del producto',
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    
+    descripcion = forms.CharField(
+        label='Descripción',
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3})
+    )
+    
+    precio = forms.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        label='Precio (€)',
+        widget=forms.NumberInput(attrs={'class': 'form-control'})
+    )
+    
+    fecha_caducidad = forms.DateField(
+        label='Fecha de caducidad',
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+    )
+    
+    def clean(self):
+        
+        super().clean()
+
+        nombre = self.cleaned_data.get('nombre')
+        precio = self.cleaned_data.get('precio')
+        fecha = self.cleaned_data.get('fecha_caducidad')
+        descripcion = self.cleaned_data.get('descripcion')
+
+        if nombre and len(nombre) < 4:
+            self.add_error('nombre', 'Al menos debes introducir 4 caracteres')
+
+        if descripcion and len(descripcion) < 10:
+            self.add_error('descripcion', 'Al menos debes introducir 10 caracteres')
+
+        if precio is not None and precio <= 0:
+            self.add_error('precio', 'No pueden existir precios negativos')
+
+        if fecha:
+            hoy = timezone.now().date()
+            min_fecha = hoy + timedelta(days=7)
+            
+            if fecha < min_fecha:
+                self.add_error('fecha_caducidad', 'No pueden registrar medicamentos caducados o que caduquen en menos de 7 dias')
+
+        return self.cleaned_data

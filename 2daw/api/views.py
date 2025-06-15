@@ -8,12 +8,86 @@ from rest_framework.permissions import BasePermission
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.contrib.auth.models import User
+import json
+from decimal import Decimal
+from tienda.models import Usuario
 
+# from django.contrib.auth import get_user_model
+# Usuario = get_user_model()
 
-# Create your views here.
+@csrf_exempt
 def productos_terceros_api(request):
-    productos = list(ProductoTercero.objects.values('id', 'nombre', 'tienda', 'precio'))
-    return JsonResponse(productos, safe=False)
+    if request.method == "GET":
+        nombre = request.GET.get('nombre')
+        
+        productos = ProductoTercero.objects.all()
+        if nombre:
+            productos = productos.filter(nombre__icontains=nombre)
+
+        productos = list(productos.values('id', 'nombre', 'descripcion', 'precio', 'fecha_caducidad'))
+        return JsonResponse(productos, safe=False)
+
+    elif request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            usuario = Usuario.objects.get(id=data.get('vendedor'))
+            if not hasattr(usuario, 'vendedor'):
+                return JsonResponse({"error": "Este usuario no es un vendedor."}, status=400)
+
+            vendedor = usuario.vendedor
+
+            nuevo_producto = ProductoTercero.objects.create(
+                nombre=data['nombre'],
+                descripcion=data['descripcion'],
+                precio=Decimal(data['precio']),
+                fecha_caducidad=data['fecha_caducidad'],
+                vendedor=vendedor
+            )
+            return JsonResponse({"mensaje": "Producto creado correctamente", "id": nuevo_producto.id}, status=201)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+
+    elif request.method == "PUT":
+        try:
+            data = json.loads(request.body)
+            producto_id = data.get("id")
+            producto = ProductoTercero.objects.get(id=producto_id)
+
+            producto.nombre = data.get("nombre", producto.nombre)
+            producto.descripcion = data.get("descripcion", producto.descripcion)
+            producto.precio = Decimal(data.get("precio", producto.precio))
+            producto.fecha_caducidad = data.get("fecha_caducidad", producto.fecha_caducidad)
+            producto.save()
+
+            return JsonResponse({"mensaje": "Producto actualizado correctamente"}, status=200)
+
+        except ProductoTercero.DoesNotExist:
+            return JsonResponse({"error": "Producto no encontrado"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+
+    elif request.method == "DELETE":
+        try:
+            data = json.loads(request.body)
+            producto_id = data.get("id")
+
+            if not producto_id:
+                return JsonResponse({"error": "ID no proporcionado"}, status=400)
+
+            producto = ProductoTercero.objects.get(id=producto_id)
+            producto.delete()
+
+            return JsonResponse({"mensaje": "Producto eliminado correctamente"}, status=200)
+
+        except ProductoTercero.DoesNotExist:
+            return JsonResponse({"error": "Producto no encontrado"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
 
 def producto_tercero_detail(request, producto_id):
     try:
@@ -22,7 +96,8 @@ def producto_tercero_detail(request, producto_id):
             'id': producto.id,
             'nombre': producto.nombre,
             'precio': str(producto.precio),
-            'tienda': producto.tienda,
+            'descripcion': producto.descripcion,
+            'fecha_caducidad': producto.fecha_caducidad,
         }
         return JsonResponse(data)
     except ProductoTercero.DoesNotExist:
@@ -39,7 +114,7 @@ class MedicamentoViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         vendedor = self.request.user.vendedor
-        serializer.save(creador=vendedor)
+        serializer.save(vendedor=vendedor)
 
 def obtener_token_oauth():
     response = requests.post(
@@ -52,8 +127,6 @@ def obtener_token_oauth():
     )
     return response.json().get("access_token")
 
-
-@login_required
 def productos_api(request):
     try:
         token = obtener_token_oauth()

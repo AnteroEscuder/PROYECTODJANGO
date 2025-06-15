@@ -10,19 +10,30 @@
                 <th>Cantidad</th>
                 <th>Cliente</th>
                 <th>Fecha solicitud</th>
+                <th>Denegado</th>
                 <th>Acción</th>
             </tr>
         </thead>
         <tbody>
-        {% for d in devoluciones %}
+            {% for d in devoluciones %}
             <tr>
                 <td>{{ d.linea_pedido.medicamento.nombre }}</td>
                 <td>{{ d.cantidad_devuelta }}</td>
                 <td>{{ d.linea_pedido.pedido.cliente.usuario.username }}</td>
                 <td>{{ d.fecha_solicitud|date:"d/m/Y H:i" }}</td>
-                <td><a href="{% url 'aceptar_devolucion' d.id %}" class="btn btn-success btn-sm">Aceptar</a></td>
+                <td>
+                    {% if d.denegada %}
+                    <span class="badge bg-danger">Denegada</span>
+                    {% elif d.aceptado %}
+                    <span class="badge bg-success">Aceptado</span>
+                    {% else %}
+                    <span class="badge bg-warning">Pendiente</span>
+                    {% endif %}
+                </td>
+                <td><a href="{% url 'aceptar_devolucion' d.id %}" class="btn btn-success btn-sm">Aceptar</a>
+                    <a href="{% url 'denegar_devolucion' d.id %}" class="btn btn-danger btn-sm">Denegar</a></td>
             </tr>
-        {% endfor %}
+            {% endfor %}
         </tbody>
     </table>
     {% else %}

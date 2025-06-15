@@ -7,6 +7,7 @@
             {% for pedido in pedidos %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Pedido {{ pedido.id }} - {{ pedido.fecha|date:"d/m/Y H:i" }}
+                    -- {{ pedido.cuenta_usada.iban|slice:":-6" }}******
                     <a href="{% url 'cancelar_pedido' pedido.id %}" class="btn btn-danger btn-sm">Cancelar</a>
                 </li>
             {% endfor %}

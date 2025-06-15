@@ -1,0 +1,44 @@
+{% extends 'estructura/principal.html' %}
+{% block contenido %}
+<div class="container mt-5">
+    <form method="get" action="{% url 'mostrar_medicamentos_api' %}" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Buscar medicamento..."
+                value="{{ request.GET.q }}">
+            <button class="btn btn-primary" type="submit">Buscar</button>
+        </div>
+    </form>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>🧪 Medicamentos de la API</h2>
+        <a href="{% url 'crear_producto_tercero' %}" class="btn btn-success">➕ Crear nuevo</a>
+    </div>
+
+    {% if productos %}
+    <div class="row">
+        {% for producto in productos %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ producto.nombre }}</h5>
+                    <p class="card-text">{{ producto.descripcion }}</p>
+                    <p><strong>Precio:</strong> {{ producto.precio }} €</p>
+                    <!-- <p><strong>Vendedor:</strong> {{ producto.vendedor }}</p> -->
+
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <a href="{% url 'importar_producto' producto.id %}" class="btn btn-primary btn-sm">⬇️
+                            Importar</a>
+                        <a href="{% url 'editar_producto_tercero' producto.id %}" class="btn btn-warning btn-sm">✏️
+                            Editar</a>
+                        <a href="{% url 'borrar_producto_tercero' producto.id %}" class="btn btn-danger btn-sm">🗑️
+                            Eliminar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-warning">No se encontraron medicamentos.</div>
+    {% endif %}
+</div>
+{% endblock %}

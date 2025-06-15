@@ -141,6 +141,7 @@ class Devolucion(models.Model):
     fecha_solicitud = models.DateTimeField(default=timezone.now)
     aceptado = models.BooleanField(default=False)
     fecha_aceptacion = models.DateTimeField(null=True, blank=True)
+    denegada = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Devolución de {self.cantidad_devuelta}x {self.linea_pedido.medicamento.nombre}"
